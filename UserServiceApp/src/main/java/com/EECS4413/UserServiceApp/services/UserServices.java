@@ -74,5 +74,22 @@ public class UserServices {
 	public List<User> readAll() {
 		return users;
 	}
+	
+	/**
+	 * Read specific user
+	 * 
+	 * @param userName username of user
+	 * @return user object
+	 */
+	
+	public User readUser(String userName) {
+		for(int i = 0; i < users.size(); i++) {
+			if(users.get(i).getUserName().equals(userName)) {
+				return users.get(i);
+			}
+		}
+		
+		return null;
+	}
 
 }

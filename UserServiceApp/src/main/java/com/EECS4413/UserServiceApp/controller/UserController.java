@@ -9,15 +9,30 @@ import com.EECS4413.UserServiceApp.services.UserServices;
 public class UserController {
 
 	private UserServices userServices = new UserServices();
+	
+	@GetMapping("/")
+	public String test() {
+		return "server works!";
+	}
 
 	@GetMapping("/users")
 	public List<User> getAllUsers() {
 		return userServices.readAll();
 	}
+	
+	@GetMapping("/users/{userName}")
+	public User getSpecificUser(@PathVariable String userName) {
+		return userServices.readUser(userName);
+	}
 
-	@PostMapping("/users")
-	public User createNewUser(User user) {
+	@PostMapping("/newuser")
+	public User createNewUser(@RequestBody User user) {
 		return userServices.create(user);
+	}
+	
+	@PutMapping("/updateuser/{userName}/{userName1}")
+	public User updateUserName(@PathVariable String userName, @PathVariable String userName1) {
+		return userServices.updateUserName(userName, userName1);
 	}
 
 }
