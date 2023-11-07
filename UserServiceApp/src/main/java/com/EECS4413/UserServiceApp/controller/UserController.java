@@ -24,6 +24,16 @@ public class UserController {
 	public User getSpecificUser(@PathVariable String userName) {
 		return userServices.readUser(userName);
 	}
+	
+	@GetMapping("/users/allSellers")
+	public List<User> getAllSellers() {
+		return userServices.readSellers();
+	}
+	
+	@GetMapping("/users/allBuyers")
+	public List<User> getAllBuyers() {
+		return userServices.readBuyers();
+	}
 
 	@PostMapping("/newuser")
 	public User createNewUser(@RequestBody User user) {
@@ -31,8 +41,8 @@ public class UserController {
 	}
 	
 	@PutMapping("/updateuser/{userName}/{userName1}")
-	public User updateUserName(@PathVariable String userName, @PathVariable String userName1) {
-		return userServices.updateUserName(userName, userName1);
+	public User updateUserName(@PathVariable String oldUserName, @PathVariable String newUserName) {
+		return userServices.updateUserName(oldUserName, newUserName);
 	}
 
 }

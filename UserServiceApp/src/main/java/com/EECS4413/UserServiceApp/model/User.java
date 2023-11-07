@@ -1,7 +1,5 @@
 package com.EECS4413.UserServiceApp.model;
 
-import jakarta.persistence.Entity;
-
 public class User {
 
 	// User Information that is stored within UserDB

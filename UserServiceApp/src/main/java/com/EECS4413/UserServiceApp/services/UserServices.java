@@ -74,22 +74,60 @@ public class UserServices {
 	public List<User> readAll() {
 		return users;
 	}
-	
+
 	/**
 	 * Read specific user
 	 * 
 	 * @param userName username of user
 	 * @return user object
 	 */
-	
+
 	public User readUser(String userName) {
-		for(int i = 0; i < users.size(); i++) {
-			if(users.get(i).getUserName().equals(userName)) {
+		for (int i = 0; i < users.size(); i++) {
+			if (users.get(i).getUserName().equals(userName)) {
 				return users.get(i);
 			}
 		}
-		
+
 		return null;
+	}
+
+	/**
+	 * Reads all sellers
+	 * 
+	 * @param no params
+	 * @return a list of all sellers
+	 */
+
+	public List<User> readSellers() {
+		List<User> sellers = new ArrayList<>();
+		
+		for (int i = 0; i < users.size(); i++) {
+			if (users.get(i).isSeller()) {
+				sellers.add(users.get(i));
+			}
+		}
+
+		return sellers;
+	}
+	
+	/**
+	 * Reads all buyers
+	 * 
+	 * @param no params
+	 * @return a list of all buyers
+	 */
+	
+	public List<User> readBuyers() {
+		List<User> buyers = new ArrayList<>();
+		
+		for(int i = 0; i < users.size(); i++) {
+			if (!users.get(i).isSeller()) {
+				buyers.add(users.get(i));
+			}
+		}
+		
+		return buyers;
 	}
 
 }
