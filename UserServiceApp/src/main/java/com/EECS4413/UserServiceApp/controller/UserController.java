@@ -44,5 +44,10 @@ public class UserController {
 	public User updateUserName(@PathVariable String oldUserName, @PathVariable String newUserName) {
 		return userServices.updateUserName(oldUserName, newUserName);
 	}
+	
+	@DeleteMapping("/users/delete/{userName}")
+	public User deleteUser(@PathVariable String userName) {
+		return userServices.deleteUser(userName);
+	}
 
 }

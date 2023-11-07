@@ -129,5 +129,26 @@ public class UserServices {
 		
 		return buyers;
 	}
+	
+	/**
+	 * Deletes a specified user
+	 * 
+	 * @param userName user name of User object
+	 * @return the deleted user
+	 */
+	
+	public User deleteUser(String userName) {
+		for(int i = 0; i < users.size(); i++) {
+			if(users.get(i).getUserName().equals(userName)) {
+				User u = users.get(i);
+				users.remove(i);
+				return u;
+			}
+		}
+		
+		return null;
+	}
+	
+	
 
 }
