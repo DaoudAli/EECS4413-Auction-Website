@@ -12,7 +12,7 @@ public class UserController {
 	
 	@GetMapping("/")
 	public String test() {
-		return "server works!";
+		return "login";
 	}
 
 	@GetMapping("/users")
