@@ -14,14 +14,14 @@ public class Bid {
     private Double amount;
     private LocalDateTime bidTime;
     
-    private Long auctionId;
+    private Long itemId;
 
     public Bid() {}
 
-    public Bid(Double amount, LocalDateTime bidTime, Long auctionId) {
+    public Bid(Double amount, LocalDateTime bidTime, Long itemId) {
         this.amount = amount;
         this.bidTime = bidTime;
-        this.auctionId = auctionId;
+        this.itemId = itemId;
     }
 
 
@@ -49,13 +49,15 @@ public class Bid {
         this.bidTime = bidTime;
     }
 
-    public Long getAuctionId() {
-        return auctionId;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setAuctionId(Long auctionId) {
-        this.auctionId = auctionId;
+    public void setItemId(Long auctionId) {
+        this.itemId = auctionId;
     }
+
+
 
 }
 
