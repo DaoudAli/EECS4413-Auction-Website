@@ -53,3 +53,4 @@ build/
 .env
 **/application.properties
 CatalogueServiceApp/src/main/resources/application.properties
+AuctionServiceApp/src/main/resources/application.properties
