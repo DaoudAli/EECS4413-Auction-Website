@@ -137,12 +137,11 @@ public class AuctionController {
         ItemDTO itemDTO;
         try {
             itemDTO = catalogueServiceClient.getItemById(itemId);
-
         } catch (FeignException.NotFound e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item not found.");
         }
         // TODO: Implement the logic to return the status of the item/auction
-        return new ResponseEntity<>(itemDTO.getEndTime(), HttpStatus.OK);
+        return new ResponseEntity<>(itemDTO, HttpStatus.OK);
     }
 
     public ItemDTO getItemDetails(Long itemId) {

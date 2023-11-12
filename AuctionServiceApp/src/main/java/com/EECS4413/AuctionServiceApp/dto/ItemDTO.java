@@ -5,14 +5,11 @@ import java.time.LocalDateTime;
 
 public class ItemDTO {
     // Define AuctionType enum here
-    public enum AuctionType {
-        FORWARD, DUTCH
-    }
 
     private Long id;
     private String name;
     private String description;
-    private AuctionType typeOfAuction;
+    private String typeOfAuction;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private BigDecimal startBidPrice;
@@ -72,14 +69,14 @@ public class ItemDTO {
     /**
      * @return AuctionType return the typeOfAuction
      */
-    public AuctionType getTypeOfAuction() {
+    public String getTypeOfAuction() {
         return typeOfAuction;
     }
 
     /**
      * @param typeOfAuction the typeOfAuction to set
      */
-    public void setTypeOfAuction(AuctionType typeOfAuction) {
+    public void setTypeOfAuction(String typeOfAuction) {
         this.typeOfAuction = typeOfAuction;
     }
 

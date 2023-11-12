@@ -8,9 +8,9 @@ import com.EECS4413.AuctionServiceApp.dto.ItemDTO;
 @FeignClient(name = "catalogue-service", url = "${catalogue.service.url}")
 public interface CatalogueServiceClient {
 
-    @GetMapping("/items/{id}")
+    @GetMapping("/catalogue/items/{id}")
     ItemDTO getItemById(@PathVariable("id") Long id);
 
-    @PutMapping("/items/{id}")
+    @PutMapping("/catalogue/items/{id}")
     void updateItem(@PathVariable("id") Long id, @RequestBody ItemDTO item);
 }
