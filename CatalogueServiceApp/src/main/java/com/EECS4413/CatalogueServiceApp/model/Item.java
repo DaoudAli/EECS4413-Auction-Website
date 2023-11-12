@@ -132,7 +132,24 @@ public class Item {
     private String keywords;
 
     public enum AuctionType {
-        FORWARD, DUTCH
+        FORWARD, DUTCH, forward, dutch
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", typeOfAuction=" + typeOfAuction +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", startBidPrice=" + startBidPrice +
+                ", currentBidPrice=" + currentBidPrice +
+                ", sellerId=" + sellerId +
+                ", imageUrls='" + imageUrls + '\'' +
+                ", keywords='" + keywords + '\'' +
+                '}';
     }
 
 }

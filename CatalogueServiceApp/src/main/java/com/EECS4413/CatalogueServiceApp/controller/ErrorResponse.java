@@ -9,4 +9,13 @@ public class ErrorResponse {
         this.errorDetails = errorDetails;
     }
 
+    // Getter for message
+    public String getMessage() {
+        return message;
+    }
+
+    // Getter for errorDetails
+    public String getErrorDetails() {
+        return errorDetails;
+    }
 }
