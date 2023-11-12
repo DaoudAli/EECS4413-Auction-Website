@@ -38,15 +38,27 @@ public class CatalogueService {
     public Optional<Item> updateItem(Long id, Item updatedItem) {
         return itemDatabase.findById(id)
                 .map(existingItem -> {
-                    // Here you can add any update logic or validations
-                    existingItem.setName(updatedItem.getName());
-                    existingItem.setDescription(updatedItem.getDescription());
-                    existingItem.setTypeOfAuction(updatedItem.getTypeOfAuction());
-                    existingItem.setStartTime(updatedItem.getStartTime());
-                    existingItem.setEndTime(updatedItem.getEndTime());
-                    existingItem.setStartBidPrice(updatedItem.getStartBidPrice());
-                    existingItem.setCurrentBidPrice(updatedItem.getCurrentBidPrice());
-                    // ... other fields to update
+                    if (updatedItem.getName() != null) {
+                        existingItem.setName(updatedItem.getName());
+                    }
+                    if (updatedItem.getDescription() != null) {
+                        existingItem.setDescription(updatedItem.getDescription());
+                    }
+                    if (updatedItem.getTypeOfAuction() != null) {
+                        existingItem.setTypeOfAuction(updatedItem.getTypeOfAuction());
+                    }
+                    if (updatedItem.getStartTime() != null) {
+                        existingItem.setStartTime(updatedItem.getStartTime());
+                    }
+                    if (updatedItem.getEndTime() != null) {
+                        existingItem.setEndTime(updatedItem.getEndTime());
+                    }
+                    if (updatedItem.getStartBidPrice() != null) {
+                        existingItem.setStartBidPrice(updatedItem.getStartBidPrice());
+                    }
+                    if (updatedItem.getCurrentBidPrice() != null) {
+                        existingItem.setCurrentBidPrice(updatedItem.getCurrentBidPrice());
+                    }
                     return itemDatabase.save(existingItem);
                 });
     }

@@ -66,7 +66,7 @@ public class CatalogueController {
     @GetMapping("/items/{id}")
     public ResponseEntity<?> getItemById(@PathVariable Long id) {
         Optional<Item> itemOptional = catalogueService.findItemById(id);
-        if (itemOptional.isPresent()) {
+        if (!itemOptional.isEmpty()) {
             return ResponseEntity.ok(itemOptional.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -100,13 +100,13 @@ public class CatalogueController {
 
     // Delete an item from the catalogue
     @Operation(summary = "Delete an item", description = "Delete an item from the catalogue")
-    @ApiResponse(responseCode = "200", description = "Item deleted successfully")
+    @ApiResponse(responseCode = "204", description = "Item deleted successfully")
     @ApiResponse(responseCode = "404", description = "Item not found")
     @DeleteMapping("/items/{id}")
     public ResponseEntity<?> deleteItem(@PathVariable Long id) {
         boolean wasDeleted = catalogueService.deleteItem(id);
         if (wasDeleted) {
-            return ResponseEntity.ok("Item deleted successfully.");
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Unable to delete. Item with ID " + id + " not found.");
