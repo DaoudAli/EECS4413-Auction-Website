@@ -37,11 +37,20 @@ public class AuctionController {
 
     }
 
+    @Operation(summary = "Get all bids", description = "Retrieve a list of all bids")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved all bids", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
+    @GetMapping("/bids")
+    public ResponseEntity<List<Bid>> getAllBids() {
+        List<Bid> bids = bidRepository.findAll();
+
+        return new ResponseEntity<>(bids, HttpStatus.OK);
+    }
+
     @Operation(summary = "Get all bids for an item", description = "Retrieve a list of all bids for a specific item")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved all bids for the item", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
     @GetMapping("/{itemId}/bids")
-    public ResponseEntity<List<Bid>> getAllBids() {
-        List<Bid> bids = bidRepository.findAll();
+    public ResponseEntity<List<Bid>> getAllBidsForItem(@PathVariable Long itemId) {
+        List<Bid> bids = bidRepository.findByItemId(itemId);
 
         return new ResponseEntity<>(bids, HttpStatus.OK);
     }
@@ -134,11 +143,9 @@ public class AuctionController {
         }
         // TODO: Implement the logic to return the status of the item/auction
         return new ResponseEntity<>(itemDTO.getEndTime(), HttpStatus.OK);
-        // Logic to get the status of the auction goes here
     }
 
     public ItemDTO getItemDetails(Long itemId) {
         return catalogueServiceClient.getItemById(itemId);
     }
-    // Additional bid-related endpoints...
 }
