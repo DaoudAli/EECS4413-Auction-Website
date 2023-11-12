@@ -1,6 +1,9 @@
 package com.EECS4413.UserServiceApp.controller;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 import com.EECS4413.UserServiceApp.model.User;
 import com.EECS4413.UserServiceApp.services.UserServices;
@@ -9,53 +12,60 @@ import com.EECS4413.UserServiceApp.services.UserServices;
 public class UserController {
 
 	private UserServices userServices = new UserServices();
-	
-	//at the root, displays simple string text (can delete I used it to test if my local host was working)
+
+	@Operation(summary = "Test Endpoint", description = "Endpoint to check if the service is running.")
 	@GetMapping("/")
 	public String test() {
-		return "login";
+		return "Service is running";
 	}
 
-	//returns a list of all users
+	@Operation(summary = "Get All Users", description = "Retrieves a list of all users.")
 	@GetMapping("/users")
 	public List<User> getAllUsers() {
 		return userServices.readAll();
 	}
-	
-	//returns the specific user with the userName
+
+	@Operation(summary = "Get Specific User", description = "Retrieves a specific user by username.")
 	@GetMapping("/users/{userName}")
-	public User getSpecificUser(@PathVariable String userName) {
+	public User getSpecificUser(@Parameter(description = "Username of the user") @PathVariable String userName) {
 		return userServices.readUser(userName);
 	}
 
-	//returns all sellers
+	@Operation(summary = "Get All Sellers", description = "Retrieves a list of all sellers.")
 	@GetMapping("/users/allSellers")
 	public List<User> getAllSellers() {
 		return userServices.readSellers();
 	}
-	
-	//returns all buyers
+
+	@Operation(summary = "Get All Buyers", description = "Retrieves a list of all buyers.")
 	@GetMapping("/users/allBuyers")
 	public List<User> getAllBuyers() {
 		return userServices.readBuyers();
 	}
 
-	//create a new user
+	@Operation(summary = "Create User", description = "Creates a new user.")
+	@ApiResponse(responseCode = "201", description = "User successfully created.")
+	@ApiResponse(responseCode = "400", description = "Invalid user details.")
 	@PostMapping("/newuser")
 	public User createNewUser(@RequestBody User user) {
 		return userServices.create(user);
 	}
-	
-	//update a username if its not taken
-	@PutMapping("/updateuser/{userName}/{userName1}")
-	public User updateUserName(@PathVariable String oldUserName, @PathVariable String newUserName) {
+
+	@Operation(summary = "Update User", description = "Updates a user's username.")
+	@ApiResponse(responseCode = "200", description = "Username successfully updated.")
+	@ApiResponse(responseCode = "404", description = "User not found.")
+	@PutMapping("/updateuser/{oldUserName}/{newUserName}")
+	public User updateUserName(@Parameter(description = "The old username") @PathVariable String oldUserName,
+			@Parameter(description = "The new username") @PathVariable String newUserName) {
 		return userServices.updateUserName(oldUserName, newUserName);
 	}
-	
-	//delete the user
+
+	@Operation(summary = "Delete User", description = "Deletes a user by username.")
+	@ApiResponse(responseCode = "200", description = "User successfully deleted.")
+	@ApiResponse(responseCode = "404", description = "User not found.")
 	@DeleteMapping("/users/delete/{userName}")
-	public User deleteUser(@PathVariable String userName) {
+	public User deleteUser(
+			@Parameter(description = "The username of the user to delete") @PathVariable String userName) {
 		return userServices.deleteUser(userName);
 	}
-
 }
