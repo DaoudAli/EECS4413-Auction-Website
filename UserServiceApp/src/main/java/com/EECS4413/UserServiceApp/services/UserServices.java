@@ -1,33 +1,28 @@
 package com.EECS4413.UserServiceApp.services;
 
 import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.EECS4413.UserServiceApp.database.UserRepository;
 import com.EECS4413.UserServiceApp.model.User;
 
+@Service
 public class UserServices {
 
-	private static List<User> users = new ArrayList<>();
+	private final UserRepository userRepository;
 
-	/**
-	 * CREATE methods
-	 */
-
-	/**
-	 * Creates a new User Users can not have the same username
-	 * 
-	 * @param User the new user object
-	 * @return new user object
-	 */
+	@Autowired
+	public UserServices(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	public User create(User user) {
-
-		for (int i = 0; i < users.size(); i++) {
-			if (users.get(i).getUserName().equals(user.getUserName())) {
-				return null;
-			}
+		if (userRepository.findByUserName(user.getUserName()) != null) {
+			return null;
 		}
-
-		users.add(user);
-		return null;
+		return userRepository.save(user);
 	}
 
 	/**
@@ -40,29 +35,14 @@ public class UserServices {
 
 	public User updateUserName(String oldUserName, String newUserName) {
 
-		// userNum is used to locate the User with the old user name
-		int userNum = -1;
+		User user = userRepository.findByUserName(oldUserName);
 
-		for (int i = 0; i < users.size(); i++) {
-			if (users.get(i).getUserName().equals(oldUserName)) {
-				userNum = i;
-				break;
-			}
-		}
-
-		if (userNum != -1) {
-			for (int i = 0; i < users.size(); i++) {
-				if (users.get(i).getUserName().equals(newUserName)) {
-					return null;
-				}
-			}
-		} else {
+		if (user == null)
 			return null;
-		}
 
-		users.get(userNum).setUserName(newUserName);
+		user.setUserName(newUserName);
 
-		return users.get(userNum);
+		return userRepository.save(user);
 	}
 
 	/**
@@ -72,7 +52,7 @@ public class UserServices {
 	 * @return a list of all users
 	 */
 	public List<User> readAll() {
-		return users;
+		return userRepository.findAll();
 	}
 
 	/**
@@ -83,13 +63,7 @@ public class UserServices {
 	 */
 
 	public User readUser(String userName) {
-		for (int i = 0; i < users.size(); i++) {
-			if (users.get(i).getUserName().equals(userName)) {
-				return users.get(i);
-			}
-		}
-
-		return null;
+		return userRepository.findByUserName(userName);
 	}
 
 	/**
@@ -100,55 +74,35 @@ public class UserServices {
 	 */
 
 	public List<User> readSellers() {
-		List<User> sellers = new ArrayList<>();
-		
-		for (int i = 0; i < users.size(); i++) {
-			if (users.get(i).isSeller()) {
-				sellers.add(users.get(i));
-			}
-		}
-
-		return sellers;
+		return userRepository.findByIsSeller(true);
 	}
-	
+
 	/**
 	 * Reads all buyers
 	 * 
 	 * @param no params
 	 * @return a list of all buyers
 	 */
-	
+
 	public List<User> readBuyers() {
-		List<User> buyers = new ArrayList<>();
-		
-		for(int i = 0; i < users.size(); i++) {
-			if (!users.get(i).isSeller()) {
-				buyers.add(users.get(i));
-			}
-		}
-		
-		return buyers;
+		return userRepository.findByIsSeller(false);
 	}
-	
+
 	/**
 	 * Deletes a specified user
 	 * 
 	 * @param userName user name of User object
 	 * @return the deleted user
 	 */
-	
-	public User deleteUser(String userName) {
-		for(int i = 0; i < users.size(); i++) {
-			if(users.get(i).getUserName().equals(userName)) {
-				User u = users.get(i);
-				users.remove(i);
-				return u;
-			}
+
+	public String deleteUser(String userName) {
+		User user = userRepository.findByUserName(userName);
+
+		if (user == null) {
+			return "User not found";
 		}
-		
-		return null;
+		userRepository.delete(user);
+		return "User successfully deleted";
 	}
-	
-	
 
 }

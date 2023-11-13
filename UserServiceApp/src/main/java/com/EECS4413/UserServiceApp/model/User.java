@@ -22,6 +22,21 @@ public class User {
 	@Column(nullable = false)
 	private String lastName;
 
+	@Column(nullable = false)
+	private String street;
+
+	@Column(nullable = false)
+	private String streetNumber;
+
+	@Column(nullable = false)
+	private String province;
+
+	@Column(nullable = false)
+	private String country;
+
+	@Column(nullable = false)
+	private String postalCode;
+
 	@Column
 	private boolean isSeller;
 
@@ -72,11 +87,52 @@ public class User {
 		this.lastName = lastName;
 	}
 
-	public boolean isSeller() {
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getStreetNumber() {
+		return streetNumber;
+	}
+
+	public void setStreetNumber(String streetNumber) {
+		this.streetNumber = streetNumber;
+	}
+
+	public String getprovince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+		
+	}
+
+	public String getPostalCode() {
+		return postalCode;
+	}
+
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
+	}
+
+	public boolean getIsSeller() {
 		return isSeller;
 	}
 
-	public void setSeller(boolean isSeller) {
+	public void setIsSeller(boolean isSeller) {
 		this.isSeller = isSeller;
 	}
 }
