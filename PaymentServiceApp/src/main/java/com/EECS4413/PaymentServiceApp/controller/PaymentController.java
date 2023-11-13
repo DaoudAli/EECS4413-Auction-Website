@@ -4,9 +4,6 @@ import org.springframework.web.bind.annotation.*;
 
 //import com.EECS4413.PaymentServiceApp.services.AuctionServiceClient;
 
-import feign.FeignException;
-
-import com.EECS4413.PaymentServiceApp.services.AuctionDTO;
 import com.EECS4413.PaymentServiceApp.model.*;
 import com.EECS4413.PaymentServiceApp.database.PaymentRepository;
 
@@ -15,16 +12,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 //**********************************************************************************************
-// Swagger / OpenAPI Documentation available at: http://localhost:3100/swagger-ui/index.html#/
+// Swagger / OpenAPI Documentation available at: http://localhost:3400/swagger-ui/index.html#/
 //**********************************************************************************************
 
 @RestController

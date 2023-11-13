@@ -10,8 +10,10 @@ import com.EECS4413.UserServiceApp.model.User;
 
 @Service
 public class UserServices {
-
+	@Autowired
 	private final UserRepository userRepository;
+	@Autowired
+	private JWTService jwtService;
 
 	@Autowired
 	public UserServices(UserRepository userRepository) {
@@ -22,7 +24,23 @@ public class UserServices {
 		if (userRepository.findByUserName(user.getUserName()) != null) {
 			return null;
 		}
+
 		return userRepository.save(user);
+	}
+
+	public String authenticate(String username, String password) {
+		User user = userRepository.findByUserNameAndPassWord(username, password);
+		if (user != null) {
+			return jwtService.generateToken(user);
+		}
+		return null;
+	}
+
+	public User getUserFromToken(String token) {
+		if (jwtService.validateToken(token)) {
+			return jwtService.getUserFromToken(token);
+		}
+		return null; // or throw an appropriate exception
 	}
 
 	/**

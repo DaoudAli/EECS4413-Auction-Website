@@ -1,3 +1,4 @@
+import Link from 'next/link';
 export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-900 p-4">
@@ -12,12 +13,12 @@ export default function Home() {
           </div>
         </div>
         <div className="flex flex-col space-y-4 md:flex-1 md:justify-center">
-          <a href="/signin" className="btn btn-outline btn-accent text-lg">
+          <Link href="/signin" className="btn btn-outline btn-accent text-lg">
             Sign-In
-          </a>
-          <a href="/signup" className="btn btn-primary text-lg">
+          </Link>
+          <Link href="/signup" className="btn btn-primary text-lg">
             Sign-Up
-          </a>
+          </Link>
         </div>
       </div>
     </div>
