@@ -1,8 +1,6 @@
 # E-Commerce Auction System
 
-This repository contains the backend services for an e-commerce auction platform implemented using a microservice architecture with Spring Boot. The frontend application is built using Next.js and is bundled with Bun.
-
-Project is developed for the EECS4413 Class at York University.
+This repository contains the backend services for an e-commerce auction platform implemented using a microservice architecture with Spring Boot, and a frontend application built using Next.js and Bun. This project is developed for the EECS4413 Class at York University.
 
 ## Services
 
@@ -20,11 +18,45 @@ Each service is designed to run independently, communicating over well-defined A
 - Java JDK 17
 - Maven 3.6 or later
 - Access to the hosted MySQL database (credentials required from developers)
+- Bun (for running the frontend application)
 
 ### Installation
 
-Clone the repository and navigate to each service directory:
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/DaoudAli/EECS4413-Auction-Website.git
+   ```
 
-```bash
-git clone https://github.com/your-username/auction-system.git
-cd auction-system/<service_name>
+2. **Navigate to Each Service Directory:**
+   For each service (`catalogueService`, `auctionService`, `userService`, `paymentService`), navigate to its directory and run it as a Spring Boot application.
+   ```bash
+   cd EECS4413-Auction-Website/<service_name>
+   mvn spring-boot:run
+   ```
+
+3. **Running the Services:**
+   Each service runs on a different port and can be accessed independently.
+   - Catalogue Service: `http://localhost:3100`
+   - Auction Service: `http://localhost:3200`
+   - User Service: `http://localhost:3300`
+   - Payment Service: `http://localhost:3400`
+
+4. **Setting Up the Frontend Application:**
+   - Navigate to the frontend application directory:
+     ```bash
+     cd EECS4413-Auction-Website/client-app
+     ```
+   - Install dependencies and run the development server with Bun:
+     ```bash
+     bun install
+     bun --bun run dev
+     ```
+   - The frontend application will be available at `http://localhost:3000`.
+
+### Usage
+
+After starting the services and the frontend application, you can use the platform to browse the catalogue, participate in auctions, manage user accounts, and process payments. Each service's API can be accessed for extended functionalities or integrations.
+
+---
+
+Please ensure that all your local environment settings are properly configured to connect to the necessary services and databases.
