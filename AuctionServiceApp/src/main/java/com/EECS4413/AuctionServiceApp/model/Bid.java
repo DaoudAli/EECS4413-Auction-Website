@@ -12,18 +12,18 @@ public class Bid {
     @GeneratedValue
     private Long id;
     private Double amount;
-    private LocalDateTime bidTime;
-    
-    private Long itemId;
 
-    public Bid() {}
+    private Long auctionId;
+    private Long bidderId;
 
-    public Bid(Double amount, LocalDateTime bidTime, Long itemId) {
-        this.amount = amount;
-        this.bidTime = bidTime;
-        this.itemId = itemId;
+    public Bid() {
     }
 
+    public Bid(Double amount, Long auctionId, Long bidderId) {
+        this.amount = amount;
+        this.auctionId = auctionId;
+        this.bidderId = bidderId;
+    }
 
     public Long getId() {
         return id;
@@ -41,23 +41,32 @@ public class Bid {
         this.amount = amount;
     }
 
-    public LocalDateTime getBidTime() {
-        return bidTime;
+    /**
+     * @return Long return the bidderId
+     */
+    public Long getBidderId() {
+        return bidderId;
     }
 
-    public void setBidTime(LocalDateTime bidTime) {
-        this.bidTime = bidTime;
+    /**
+     * @param bidderId the bidderId to set
+     */
+    public void setBidderId(Long bidderId) {
+        this.bidderId = bidderId;
     }
 
-    public Long getItemId() {
-        return itemId;
+    /**
+     * @return Long return the auctionId
+     */
+    public Long getAuctionId() {
+        return auctionId;
     }
 
-    public void setItemId(Long auctionId) {
-        this.itemId = auctionId;
+    /**
+     * @param auctionId the auctionId to set
+     */
+    public void setAuctionId(Long auctionId) {
+        this.auctionId = auctionId;
     }
-
-
 
 }
-
