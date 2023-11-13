@@ -70,7 +70,6 @@ public class PaymentController {
 
     @Operation(summary = "Make a payment", description = "Submit a payment")
     @ApiResponse(responseCode = "201", description = "Payment successful", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Payment.class)))
-    @ApiResponse(responseCode = "404", description = "Item not found")
     @ApiResponse(responseCode = "400", description = "Invalid payment submission")
     @PostMapping("/pay")
     public ResponseEntity<?> makePayment(@RequestBody Payment payment) {
