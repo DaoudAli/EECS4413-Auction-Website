@@ -52,7 +52,17 @@ Each service is designed to run independently, communicating over well-defined A
      bun --bun run dev
      ```
    - The frontend application will be available at `http://localhost:3000`.
+   - 
+### Swagger UI Documentation
 
+Each service provides Swagger UI documentation for its API endpoints. You can access these documents at:
+
+- Catalogue Service Swagger UI: `http://localhost:3100/swagger-ui/index.html#`
+- Auction Service Swagger UI: `http://localhost:3200/swagger-ui/index.html#`
+- User Service Swagger UI: `http://localhost:3300/swagger-ui/index.html#`
+- Payment Service Swagger UI: `http://localhost:3400/swagger-ui/index.html#`
+
+Through these interfaces, users can view all available routes, their specifications, and test the API endpoints directly.
 ### Usage
 
 After starting the services and the frontend application, you can use the platform to browse the catalogue, participate in auctions, manage user accounts, and process payments. Each service's API can be accessed for extended functionalities or integrations.
