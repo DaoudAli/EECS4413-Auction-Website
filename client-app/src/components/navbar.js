@@ -20,11 +20,14 @@ export default function Navbar() {
           </Link>
           <Link
             href="/signin"
-            className="p-2 rounded btn-outline btn btn-primary btn-sm text-white"
+            className="p-2 rounded btn-outline btn btn-accent btn-sm text-white text-md"
           >
             Sign In
           </Link>
-          <Link href="/signup" className="p-2 btn-primary btn rounded btn-sm">
+          <Link
+            href="/signup"
+            className="p-2 btn-primary btn rounded btn-sm text-md"
+          >
             Sign Up
           </Link>
         </div>

@@ -12,16 +12,10 @@ export default function Home() {
           </div>
         </div>
         <div className="flex flex-col space-y-4 md:flex-1 md:justify-center">
-          <a
-            href="/signin"
-            className="rounded bg-blue-500 text-center py-2 px-4 text-white hover:bg-blue-600"
-          >
+          <a href="/signin" className="btn btn-outline btn-accent text-lg">
             Sign-In
           </a>
-          <a
-            href="/signup"
-            className="rounded bg-green-500 text-center py-2 px-4 text-white hover:bg-green-600"
-          >
+          <a href="/signup" className="btn btn-primary text-lg">
             Sign-Up
           </a>
         </div>
