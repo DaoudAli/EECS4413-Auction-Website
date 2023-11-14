@@ -1,6 +1,7 @@
 // pages/dutch-auction.js
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 export default function DutchAuctionPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center space-y-8">
@@ -8,7 +9,7 @@ export default function DutchAuctionPage() {
         <h2 className="text-2xl font-bold mb-4 text-white">Dutch Auction</h2>
         <div className="grid grid-cols-1 gap-4">
           <div className="relative w-full h-[200px]">
-            <img
+            <Image
               alt="Product Image"
               className="absolute inset-0 object-cover w-full h-full rounded-lg"
               height="200"

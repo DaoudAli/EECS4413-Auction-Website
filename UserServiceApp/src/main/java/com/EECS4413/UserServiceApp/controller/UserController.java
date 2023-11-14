@@ -9,11 +9,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.EECS4413.UserServiceApp.model.User;
 import com.EECS4413.UserServiceApp.services.UserServices;
+
+//**********************************************************************************************
+// Swagger / OpenAPI Documentation available at: http://localhost:3300/swagger-ui/index.html#/
+//**********************************************************************************************
 
 @RestController
 @RequestMapping("/users")
@@ -70,17 +75,55 @@ public class UserController {
 	@PostMapping("/new")
 	public ResponseEntity<?> createNewUser(@RequestBody User user) {
 		User newUser = userServices.create(user);
+		String token = userServices.authenticate(user.getUserName(), user.getPassWord());
 		if (newUser == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+		if (token != null) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(HttpHeaders.SET_COOKIE, token);
+			return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(newUser);
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Failed to create user");
+		}
+	}
+
+	@Operation(summary = "Sign In User", description = "Authenticates a user and returns a token.")
+	@ApiResponse(responseCode = "200", description = "User successfully authenticated.")
+	@ApiResponse(responseCode = "401", description = "Invalid credentials.")
+	@PostMapping("/sign-in")
+	public ResponseEntity<?> signIn(@RequestBody User credentials) {
+		String token = userServices.authenticate(credentials.getUserName(), credentials.getPassWord());
+
+		if (token != null) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(HttpHeaders.SET_COOKIE, token);
+			return ResponseEntity.ok().headers(headers).body("User authenticated successfully");
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+		}
+	}
+
+	@Operation(summary = "Get Authenticated User Details", description = "Returns user details for a valid JWT token.")
+	@ApiResponse(responseCode = "200", description = "User details retrieved successfully", content = @Content(schema = @Schema(implementation = User.class)))
+	@ApiResponse(responseCode = "401", description = "Unauthorized - Invalid Token", content = @Content(schema = @Schema(implementation = String.class)))
+	@GetMapping("/me")
+	public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token) {
+		token = token.split(" ")[1];
+		User user = userServices.getUserFromToken(token);
+		if (user != null) {
+			return ResponseEntity.ok(user);
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized - Invalid Token");
+		}
 	}
 
 	@Operation(summary = "Update User", description = "Updates a user's username.")
 	@ApiResponse(responseCode = "200", description = "Username successfully updated.")
 	@ApiResponse(responseCode = "404", description = "User not found.")
 	@PutMapping("/update/{oldUserName}/{newUserName}")
-	public ResponseEntity<?> updateUserName(@Parameter(description = "The old username") @PathVariable String oldUserName,
+	public ResponseEntity<?> updateUserName(
+			@Parameter(description = "The old username") @PathVariable String oldUserName,
 			@Parameter(description = "The new username") @PathVariable String newUserName) {
 		User user = userServices.updateUserName(oldUserName, newUserName);
 		if (user == null) {
