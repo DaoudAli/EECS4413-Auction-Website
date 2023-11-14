@@ -1,33 +1,36 @@
 // components/Navbar.js
 import Link from 'next/link';
-
+import { Search, CircleDollarSign } from 'lucide-react';
 export default function Navbar() {
   return (
     <nav className="bg-gray-900 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <Link href="/" className="text-lg font-bold">
-          AUCTION APP LOGO
+        <Link href="/" className="text-2xl font-bold">
+          AUCTION<span className="text-red-600">APP</span>
         </Link>
         <div className="flex items-center gap-2">
-          <Link href="/about" className="p-2 hover:bg-gray-700 rounded">
-            About
-          </Link>
-          <Link href="/services" className="p-2 hover:bg-gray-700 rounded">
-            Services
-          </Link>
-          <Link href="/contact" className="p-2 hover:bg-gray-700 rounded">
-            Contact
+          <Link
+            href="/catalogue/sell"
+            className="p-2 hover:bg-gray-700 rounded flex"
+          >
+            <CircleDollarSign className="mr-1" />
+            Sell an item
           </Link>
           <Link
+            href="/catalogue"
+            className="p-2 hover:bg-gray-700 rounded flex "
+          >
+            <Search className="mr-1" />
+            Buy an item
+          </Link>
+
+          <Link
             href="/signin"
-            className="p-2 rounded btn-outline btn btn-accent btn-sm text-white text-md"
+            className="p-2  btn-outline btn btn-primary btn-sm text-white text-md"
           >
             Sign In
           </Link>
-          <Link
-            href="/signup"
-            className="p-2 btn-primary btn rounded btn-sm text-md"
-          >
+          <Link href="/signup" className="p-2 btn-primary btn btn-sm text-md">
             Sign Up
           </Link>
         </div>

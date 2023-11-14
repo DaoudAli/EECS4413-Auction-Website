@@ -35,35 +35,45 @@ public class AuctionStatusScheduler {
         List<Auction> nullAuctions = auctionRepository.findByStatus(null);
         activeAuctions.addAll(nullAuctions);
         LocalDateTime now = LocalDateTime.now();
+
         for (Auction auction : activeAuctions) {
+            try {
+                ItemDTO item = catalogueServiceClient.getItemById(auction.getItemId());
+                auction.setType(AuctionType.valueOf(item.getTypeOfAuction().toUpperCase()));
 
-            ItemDTO item = catalogueServiceClient.getItemById(auction.getItemId());
-            auction.setType(AuctionType.valueOf(item.getTypeOfAuction().toUpperCase()));
-
-            if (item.getEndTime().isBefore(now)) {
-
-                if (bidRepository.findByAuctionId(auction.getId()).isEmpty())
-                    auction.setStatus(Auction.AuctionStatus.EXPIRED);
-                else
-                    auction.setStatus(Auction.AuctionStatus.ENDED);
-                auctionRepository.save(auction);
+                if (item.getEndTime().isBefore(now)) {
+                    if (bidRepository.findByAuctionId(auction.getId()).isEmpty()) {
+                        auction.setStatus(Auction.AuctionStatus.EXPIRED);
+                    } else {
+                        auction.setStatus(Auction.AuctionStatus.ENDED);
+                    }
+                    auctionRepository.save(auction);
+                }
+            } catch (Exception e) {
+                // Log the error or handle it accordingly
+                // Optionally, you can continue with the next iteration
             }
         }
     }
 
     @Scheduled(fixedRate = 30000) // runs every 30 seconds
     public void createNewAuctionsForItems() {
-        List<ItemDTO> items = catalogueServiceClient.getAllItems();
+        try {
+            List<ItemDTO> items = catalogueServiceClient.getAllItems();
 
-        for (ItemDTO item : items) {
-            Optional<Auction> existingAuction = auctionRepository.findByItemId(item.getId());
+            for (ItemDTO item : items) {
+                Optional<Auction> existingAuction = auctionRepository.findByItemId(item.getId());
 
-            if (!existingAuction.isPresent()) {
-                Auction newAuction = new Auction();
-                newAuction.setItemId(item.getId());
-                newAuction.setType(AuctionType.valueOf(item.getTypeOfAuction().toUpperCase()));
-                auctionRepository.save(newAuction);
+                if (!existingAuction.isPresent()) {
+                    Auction newAuction = new Auction();
+                    newAuction.setItemId(item.getId());
+                    newAuction.setType(AuctionType.valueOf(item.getTypeOfAuction().toUpperCase()));
+                    auctionRepository.save(newAuction);
+                }
             }
+        } catch (Exception e) {
+            // Log the error or handle it accordingly
         }
     }
+
 }

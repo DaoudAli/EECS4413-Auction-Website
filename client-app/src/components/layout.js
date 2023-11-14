@@ -1,10 +1,13 @@
 import Navbar from './navbar';
+import { AuthProvider } from '@/context/AuthContext';
 
 export default function Layout({ children }) {
   return (
     <>
-      <Navbar />
-      <main>{children}</main>
+      <AuthProvider>
+        <Navbar />
+        <main>{children}</main>
+      </AuthProvider>
     </>
   );
 }
