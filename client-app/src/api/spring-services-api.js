@@ -1,21 +1,21 @@
 import Axios from 'axios';
 
 const isProduction = process.env.NEXT_PUBLIC_NODE_ENV === 'production';
-
-export const userServiceApi = Axios.create({
+export const catalogueServiceApi = Axios.create({
   baseURL: isProduction
-    ? process.env.NEXT_PUBLIC_USER_API_URL
-    : 'http://localhost:3100/users',
+    ? process.env.NEXT_PUBLIC_CATALOGUE_API_URL
+    : 'http://localhost:3100/catalogue',
 });
+
 export const auctionServiceApi = Axios.create({
   baseURL: isProduction
     ? process.env.NEXT_PUBLIC_AUCTION_API_URL
     : 'http://localhost:3200/auctions',
 });
-export const catalogueServiceApi = Axios.create({
+export const userServiceApi = Axios.create({
   baseURL: isProduction
-    ? process.env.NEXT_PUBLIC_CATALOGUE_API_URL
-    : 'http://localhost:3300/catalogue',
+    ? process.env.NEXT_PUBLIC_USER_API_URL
+    : 'http://localhost:3300/users',
 });
 export const paymentServiceApi = Axios.create({
   baseURL: isProduction
