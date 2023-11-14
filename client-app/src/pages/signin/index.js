@@ -7,18 +7,19 @@ export default function SignInPage() {
   const { login } = useAuth();
 
   const initialValues = {
-    username: '',
-    password: '',
+    userName: '',
+    passWord: '',
   };
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required('Username is required'),
-    password: Yup.string().required('Password is required'),
+    userName: Yup.string().required('Username is required'),
+    passWord: Yup.string().required('Password is required'),
   });
 
   const onSubmit = async (values, { setSubmitting }) => {
+    console.log('onSubmit values ', values);
     try {
-      await login(values.username, values.password);
+      await login(values);
       setSubmitting(false);
       // Handle successful login, e.g., redirect or show a success message
     } catch (error) {
@@ -44,40 +45,40 @@ export default function SignInPage() {
           <Form className="space-y-6">
             <div>
               <label
-                htmlFor="username"
+                htmlFor="userName"
                 className="block text-sm font-medium text-gray-700"
               >
                 User Name
               </label>
               <Field
-                id="username"
-                name="username"
+                id="userName"
+                name="userName"
                 type="text"
                 className="mt-1 block w-full px-3 py-2 bg-gray-200 border rounded-md text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Username"
               />
               <ErrorMessage
-                name="username"
+                name="userName"
                 component="div"
                 className="text-red-500 text-xs italic"
               />
             </div>
             <div>
               <label
-                htmlFor="password"
+                htmlFor="passWord"
                 className="block text-sm font-medium text-gray-700"
               >
                 Password
               </label>
               <Field
-                id="password"
-                name="password"
+                id="passWord"
+                name="passWord"
                 type="password"
                 className="mt-1 block w-full px-3 py-2 bg-gray-200 border rounded-md text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="********"
               />
               <ErrorMessage
-                name="password"
+                name="passWord"
                 component="div"
                 className="text-red-500 text-xs italic"
               />
