@@ -99,9 +99,9 @@ public class AuctionController {
 
     @Operation(summary = "Get all bids for an auction", description = "Retrieve a list of all bids for a specific auction")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved all bids for the item", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
-    @GetMapping("/{itemId}/bids")
-    public ResponseEntity<List<Bid>> getAllBidsForItem(@PathVariable Long itemId) {
-        List<Bid> bids = bidRepository.findByAuctionId(itemId);
+    @GetMapping("/{auctionId}/bids")
+    public ResponseEntity<List<Bid>> getAllBidsForAuction(@PathVariable Long auctionId) {
+        List<Bid> bids = bidRepository.findByAuctionId(auctionId);
 
         return new ResponseEntity<>(bids, HttpStatus.OK);
     }
@@ -187,7 +187,7 @@ public class AuctionController {
     @PostMapping("/{itemId}/buy-now")
     public ResponseEntity<?> placeDutchAuctionBid(@PathVariable Long itemId, @RequestBody Bid bid) {
 
-        Optional<Auction> optionalAuction = auctionRepository.findById(itemId);
+        Optional<Auction> optionalAuction = auctionRepository.findByItemId(itemId);
 
         if (!optionalAuction.isPresent()) {
             return new ResponseEntity<>("Auction not found.", HttpStatus.NOT_FOUND);
