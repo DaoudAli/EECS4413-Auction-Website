@@ -160,13 +160,13 @@ public class AuctionController {
         }
     }
 
-    @Operation(summary = "Get highest bid for auction", description = "Retrieve the highest bid for a specific auction")
+    @Operation(summary = "Get highest bid for an item", description = "Retrieve the highest bid for a specific item")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved highest bid", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)) })
     @ApiResponse(responseCode = "404", description = "Item not found or no bids available")
-    @GetMapping("/{itemId}/bids/highest")
-    public ResponseEntity<Bid> getHighestBidForItem(@PathVariable Long itemId) {
-        Optional<Auction> auction = auctionRepository.findById(itemId);
+    @GetMapping("/{auctionId}/bids/highest")
+    public ResponseEntity<Bid> getHighestBidForItem(@PathVariable Long auctionId) {
+        Optional<Auction> auction = auctionRepository.findById(auctionId);
         if (auction.isPresent()) {
             Bid highestBid = bidRepository.findByAuctionId(auction.get().getId()).stream()
                     .max(Comparator.comparing(Bid::getAmount))
@@ -181,7 +181,7 @@ public class AuctionController {
         }
     }
 
-    @Operation(summary = "Place a 'Buy Now' bid on a Dutch auction", description = "Immediately purchase an item at its 'Buy Now' price in a Dutch auction")
+    @Operation(summary = "Place a 'Buy Now' bid on an item up for Dutch auction", description = "Immediately purchase an item at its 'Buy Now' price in a Dutch auction")
     @ApiResponse(responseCode = "201", description = "Item purchased successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
     @ApiResponse(responseCode = "400", description = "Item not available for 'Buy Now'")
     @PostMapping("/{itemId}/buy-now")
@@ -206,10 +206,7 @@ public class AuctionController {
         }
         // Verify buyNowBid amount
         if (bid.getAmount().compareTo(
-                catalogueServiceClient.getItemById(auction.getItemId()).getStartBidPrice().doubleValue()) != 0) { // Assuming
-                                                                                                                  // you
-                                                                                                                  // have
-                                                                                                                  // a
+                catalogueServiceClient.getItemById(auction.getItemId()).getStartBidPrice().doubleValue()) != 0) {
             // getBuyNowPrice method
             return new ResponseEntity<>("Invalid bid amount for 'Buy Now'.", HttpStatus.BAD_REQUEST);
         }

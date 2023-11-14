@@ -10,7 +10,8 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const authenticate = async (token) => {
+  const authenticate = async () => {
+    const token = Cookies.get('token');
     setIsLoading(true);
     try {
       // Assuming '/me' is the endpoint to get current user data
@@ -27,11 +28,12 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   };
 
-  const login = async (uid, password) => {
+  const login = async (userData) => {
     setIsLoading(true);
     try {
+      console.log(userData);
       // Adjust the endpoint as per your API
-      const response = await userServiceApi.post('/sign-in', { uid, password });
+      const response = await userServiceApi.post('/sign-in', userData);
       Cookies.set('token', response.headers.getAuthorization());
       await authenticate(response.data.token);
     } catch (error) {
@@ -48,7 +50,7 @@ export const AuthProvider = ({ children }) => {
     try {
       // Adjust the endpoint as per your API
       const response = await userServiceApi.post('/new', userData);
-      Cookies.set('token', response.data.token);
+      Cookies.set('token', response.headers.getAuthorization());
       await authenticate(response.data.token);
     } catch (error) {
       console.error(error);
