@@ -135,4 +135,22 @@ public class User {
 	public void setIsSeller(boolean isSeller) {
 		this.isSeller = isSeller;
 	}
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", userName='" + userName + '\'' +
+				", passWord='" + passWord + '\'' +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", street='" + street + '\'' +
+				", streetNumber='" + streetNumber + '\'' +
+				", province='" + province + '\'' +
+				", country='" + country + '\'' +
+				", postalCode='" + postalCode + '\'' +
+				", isSeller=" + isSeller +
+				'}';
+	}
+
 }
