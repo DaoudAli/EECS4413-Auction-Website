@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 //import com.EECS4413.PaymentServiceApp.services.AuctionServiceClient;
 
 import com.EECS4413.PaymentServiceApp.model.*;
-import com.EECS4413.PaymentServiceApp.util.util;
 import com.EECS4413.PaymentServiceApp.database.PaymentRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -92,7 +91,7 @@ public class PaymentController {
         // Save the new bid
         Payment newPayment = paymentRepository.save(payment);
         // Return the response entity with the saved bid
-        return ResponseEntity.status(HttpStatus.CREATED).body("Payment Successful" + newPayment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newPayment);
     }
 
 }
