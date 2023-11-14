@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 //import com.EECS4413.PaymentServiceApp.services.AuctionServiceClient;
 
 import com.EECS4413.PaymentServiceApp.model.*;
+import com.EECS4413.PaymentServiceApp.util.util;
 import com.EECS4413.PaymentServiceApp.database.PaymentRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import com.EECS4413.PaymentServiceApp.util.Util;
 //**********************************************************************************************
 // Swagger / OpenAPI Documentation available at: http://localhost:3400/swagger-ui/index.html#/
 //**********************************************************************************************
@@ -67,6 +68,9 @@ public class PaymentController {
     @ApiResponse(responseCode = "400", description = "Invalid payment submission")
     @PostMapping("/pay")
     public ResponseEntity<?> makePayment(@RequestBody Payment payment) {
+        if (payment.getCardNumber().isEmpty() || Util.containsNonNumeric(payment.getCardNumber())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Input on Card Number");
+        }
         // Use the Feign client to check if the item exists in the CatalogueService
         // AuctionDTO auctionDTO;
         // try {

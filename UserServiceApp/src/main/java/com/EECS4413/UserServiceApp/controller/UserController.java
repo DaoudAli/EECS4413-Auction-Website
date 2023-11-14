@@ -139,6 +139,9 @@ public class UserController {
 	public ResponseEntity<?> deleteUser(
 			@Parameter(description = "The username of the user to delete") @PathVariable String userName) {
 		String response = userServices.deleteUser(userName);
+		if (response == "User not found") {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+		}
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }
