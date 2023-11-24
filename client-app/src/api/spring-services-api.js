@@ -16,6 +16,7 @@ export const userServiceApi = Axios.create({
   baseURL: isProduction
     ? process.env.NEXT_PUBLIC_USER_API_URL
     : 'http://localhost:3300/users',
+  withCredentials: true,
 });
 export const paymentServiceApi = Axios.create({
   baseURL: isProduction
