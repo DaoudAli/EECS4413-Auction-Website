@@ -16,7 +16,6 @@ export default function withAuthRedirect(WrappedComponent) {
       } catch (error) {
         console.error('Failed to access localStorage:', error);
       }
-      console.log('withAuthRedirect', currentUser);
       if (isAuthenticated) {
         toast.error('You are already signed in', {
           position: toast.POSITION.TOP_CENTER,

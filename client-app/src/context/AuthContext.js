@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
   const authenticate = useCallback(async () => {
     if (isAuthenticating) return; // Prevent multiple invocations
 
-    console.log('authenticate');
     setIsAuthenticating(true);
 
     setIsLoading(true);
@@ -32,16 +31,11 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(response.data);
       setIsAuthenticated(true);
       localStorage.setItem('isAuthenticated', 'true');
-
-      console.log(true);
-      console.log(response.data);
     } catch (error) {
       console.error(error);
       setCurrentUser(null);
       setIsAuthenticated(false);
       localStorage.setItem('isAuthenticated', 'false');
-
-      console.log(isAuthenticated);
     }
     setIsLoading(false);
     setIsAuthenticating(false); // Reset the flag
@@ -56,7 +50,6 @@ export const AuthProvider = ({ children }) => {
       // You might want to fetch the user's information here if needed
       setCurrentUser(data);
       const token = Cookies.get('auth-token');
-      console.log(data);
       setIsAuthenticated(true);
     } catch (error) {
       console.error(error);
