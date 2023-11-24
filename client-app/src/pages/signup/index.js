@@ -68,7 +68,7 @@ function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-6 py-12 g:px-8">
+    <div className="flex min-h-screen items-center justify-center px-6 py-8 g:px-8">
       <div className="w-full max-w-4xl rounded-lg shadow-md p-6 md:p-8">
         <h1 className="mb-2 text-center text-5xl font-bold leading-9 text-white">
           Sign Up
@@ -261,7 +261,7 @@ function SignupPage() {
                 <h3 className="text-gray-200">Already have an account?</h3>
                 <Link
                   href="/signin"
-                  className="btn btn-accent btn-outline btn-sm "
+                  className="btn btn-accent btn-outline btn-md"
                 >
                   Sign In
                 </Link>

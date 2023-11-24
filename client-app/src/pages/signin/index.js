@@ -58,7 +58,7 @@ function SignInPage() {
   return (
     <div className="flex min-h-screen flex-1 flex-col justify-start px-6 py-32 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md lg:w-1/3">
-        <h1 className="mt-6 text-center text-3xl font-bold leading-9 text-white">
+        <h1 className="mt-6 text-center text-5xl font-bold leading-9 text-white">
           Sign In
         </h1>
         <p className="mt-2 text-center text-lg text-gray-300">
