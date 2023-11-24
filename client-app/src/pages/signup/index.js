@@ -1,9 +1,33 @@
 import React, { useContext } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useAuth } from '@/context/AuthContext'; // Import the AuthContext
-
-export default function SignupPage() {
+import { useAuth } from '@/context/AuthContext';
+import WithAuthRedirect from '@/hoc/withAuthRedirect';
+import TextField from '@mui/material/TextField';
+import Link from 'next/link';
+const textFieldStyle = {
+  '& label.Mui-focused': {
+    color: 'white',
+  },
+  '& label': {
+    color: 'white',
+  },
+  '& .MuiInputBase-input': {
+    color: 'white',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: 'white',
+    },
+    '&:hover fieldset': {
+      borderColor: 'white',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'white',
+    },
+  },
+};
+function SignupPage() {
   const { register } = useAuth();
 
   const initialValues = {
@@ -44,220 +68,209 @@ export default function SignupPage() {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      className="flex flex-wrap -mx-3"
-      onSubmit={onSubmit}
-    >
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl bg-white rounded-lg shadow-md p-6 md:p-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
-            Sign Up
-          </h2>
-
-          <Form id="sign-up-form" className="flex flex-wrap -mx-3">
-            {/* First Name Field */}
-            <div className="w-full md:w-1/2 px-3 mb-6">
-              <label
+    <div className="flex min-h-screen items-center justify-center px-6 py-12 g:px-8">
+      <div className="w-full max-w-4xl rounded-lg shadow-md p-6 md:p-8">
+        <h1 className="mb-2 text-center text-5xl font-bold leading-9 text-white">
+          Sign Up
+        </h1>
+        <p className="mt-2 text-center font-light text-md text-gray-100">
+          Welcome to AuctionZone, please sign up below to start buying and
+          selling.
+        </p>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+        >
+          {({ handleChange, handleBlur, values, touched, errors }) => (
+            <Form className="mt-8 space-y-6">
+              <div className="md:flex">
+                {/* First Name Field */}
+                <div className="w-full md:w-1/2 px-3 mb-6">
+                  {/* <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                 htmlFor="first-name"
               >
                 First Name
-              </label>
-              <Field
-                name="firstName"
-                type="text"
-                placeholder="Jane"
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-              />
-              <ErrorMessage
-                name="firstName"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
+              </label> */}
+                  <TextField
+                    id="firstName"
+                    name="firstName"
+                    required
+                    fullWidth
+                    label="First Name"
+                    value={values.firstName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.firstName && Boolean(errors.firstName)}
+                    helperText={touched.firstName && errors.firstName}
+                    sx={textFieldStyle}
+                  />
+                </div>
 
-            <div className="w-full md:w-1/2 px-3 mb-6">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="user-name"
-              >
-                User Name
-              </label>
-              <Field
-                name="userName"
-                type="text"
-                placeholder="janedoe"
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-              />
-              <ErrorMessage
-                name="userName"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-3 mb-6">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="lastName"
-              >
-                Last Name
-              </label>
-              <Field
-                name="lastName"
-                type="text"
-                placeholder="Doe"
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-              />
-              <ErrorMessage
-                name="lastName"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-3 mb-6">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="passWord"
-              >
-                Password
-              </label>
-              <Field
-                name="passWord"
-                type="password"
-                placeholder="********"
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-              />
-              <ErrorMessage
-                name="passWord"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
-            <div className="w-full px-3 mb-6">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="street"
-              >
-                Street Address
-              </label>
-              <Field
-                name="street"
-                type="text"
-                placeholder="123 Main St"
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-              />
-              <ErrorMessage
-                name="street"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-3 mb-6">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="streetNumber"
-              >
-                Street Number
-              </label>
-              <Field
-                name="streetNumber"
-                type="text"
-                placeholder="123"
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-              />
-              <ErrorMessage
-                name="streetNumber"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-3 mb-6">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="postalCode"
-              >
-                Postal Code
-              </label>
-              <Field
-                name="postalCode"
-                type="text"
-                placeholder="10001"
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-              />
-              <ErrorMessage
-                name="postalCode"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-3 mb-6">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="city"
-              >
-                City
-              </label>
-              <Field
-                name="city"
-                type="text"
-                placeholder="New York"
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-              />
-              <ErrorMessage
-                name="city"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-3 mb-6">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="province"
-              >
-                City
-              </label>
-              <Field
-                name="province"
-                type="text"
-                placeholder="ON"
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-              />
-              <ErrorMessage
-                name="province"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-3 mb-6">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="country"
-              >
-                Country
-              </label>
-              <Field
-                name="country"
-                type="text"
-                placeholder="USA"
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-              />
-              <ErrorMessage
-                name="country"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
+                <div className="w-full md:w-1/2 px-3 mb-6">
+                  <TextField
+                    id="userName"
+                    name="userName"
+                    required
+                    fullWidth
+                    label="User Name"
+                    value={values.userName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.userName && Boolean(errors.userName)}
+                    helperText={touched.userName && errors.userName}
+                    sx={textFieldStyle}
+                  />
+                </div>
+              </div>
+              <div className="md:flex">
+                <div className="w-full md:w-1/2 px-3 mb-6">
+                  <TextField
+                    id="lastName"
+                    name="lastName"
+                    required
+                    fullWidth
+                    label="Last Name"
+                    value={values.lastName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.lastName && Boolean(errors.lastName)}
+                    helperText={touched.lastName && errors.lastName}
+                    sx={textFieldStyle}
+                  />
+                </div>
+                <div className="w-full md:w-1/2 px-3 mb-6">
+                  <TextField
+                    id="passWord"
+                    name="passWord"
+                    type="password"
+                    required
+                    fullWidth
+                    label="Password"
+                    value={values.passWord}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.passWord && Boolean(errors.passWord)}
+                    helperText={touched.passWord && errors.passWord}
+                    sx={textFieldStyle}
+                  />
+                </div>
+              </div>
+              <div className="w-full px-3 mb-6">
+                <TextField
+                  id="street"
+                  name="street"
+                  required
+                  fullWidth
+                  label="Street"
+                  value={values.street}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.street && Boolean(errors.street)}
+                  helperText={touched.street && errors.street}
+                  sx={textFieldStyle}
+                />
+              </div>
+              <div className="md:flex">
+                <div className="w-full md:w-1/2 px-3 mb-6">
+                  <TextField
+                    id="streetNumber"
+                    name="streetNumber"
+                    required
+                    fullWidth
+                    label="Street Number"
+                    value={values.streetNumber}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.streetNumber && Boolean(errors.streetNumber)}
+                    helperText={touched.streetNumber && errors.streetNumber}
+                    sx={textFieldStyle}
+                  />
+                </div>
+                <div className="w-full md:w-1/2 px-3 mb-6">
+                  <TextField
+                    id="postalCode"
+                    name="postalCode"
+                    required
+                    fullWidth
+                    label="Postal Code"
+                    value={values.postalCode}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.postalCode && Boolean(errors.postalCode)}
+                    helperText={touched.postalCode && errors.postalCode}
+                    sx={textFieldStyle}
+                  />
+                </div>
+              </div>
+              <div className="md:flex">
+                <div className="w-full md:w-1/2 px-3 mb-6">
+                  <TextField
+                    id="city"
+                    name="city"
+                    required
+                    fullWidth
+                    label="City"
+                    value={values.city}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.city && Boolean(errors.city)}
+                    helperText={touched.city && errors.city}
+                    sx={textFieldStyle}
+                  />
+                </div>
+                <div className="w-full md:w-1/2 px-3 mb-6">
+                  <TextField
+                    id="province"
+                    name="province"
+                    required
+                    fullWidth
+                    label="Province"
+                    value={values.province}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.province && Boolean(errors.province)}
+                    helperText={touched.province && errors.province}
+                    sx={textFieldStyle}
+                  />
+                </div>
+              </div>
+              <div className="w-full md:w-1/2 px-3 mb-6">
+                <TextField
+                  id="country"
+                  name="country"
+                  required
+                  fullWidth
+                  label="Country"
+                  value={values.country}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.country && Boolean(errors.country)}
+                  helperText={touched.country && errors.country}
+                  sx={textFieldStyle}
+                />
+              </div>
 
-            <div className="w-full px-3 mt-6">
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </div>
-          </Form>
-        </div>
+              <div className="flex w-full px-3 mt-6 justify-center">
+                <button type="submit" className="btn btn-primary w-3/4">
+                  Submit
+                </button>
+              </div>
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-1 sm:space-x-4 items-center justify-center my-10">
+                <h3 className="text-gray-200">Already have an account?</h3>
+                <Link
+                  href="/signin"
+                  className="btn btn-accent btn-outline btn-sm "
+                >
+                  Sign In
+                </Link>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
-    </Formik>
+    </div>
   );
 }
+export default WithAuthRedirect(SignupPage);
