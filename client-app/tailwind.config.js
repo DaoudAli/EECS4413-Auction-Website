@@ -16,7 +16,17 @@ module.exports = {
     },
   },
   daisyui: {
-    themes: ['light', 'dark', 'night'],
+    themes: [
+      'light',
+      'dark',
+      'night',
+      // {
+      //   night: {
+      //     ...require('daisyui/src/theming/themes')['night'],
+      //     accent: '#ef4444',
+      //   },
+      // },
+    ],
   },
   plugins: [require('daisyui')],
 };
