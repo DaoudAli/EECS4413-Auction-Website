@@ -1,12 +1,13 @@
 // components/Navbar.js
 import Link from 'next/link';
 import { Search, CircleDollarSign } from 'lucide-react';
-export default function Navbar() {
+
+const LoggedOutNavBar = () => {
   return (
     <nav className="bg-gray-900 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold">
-          AUCTION<span className="text-red-600">APP</span>
+          AUCTION<span className="text-pink-500">ZONE</span>
         </Link>
         <div className="flex items-center gap-2">
           <Link
@@ -26,7 +27,7 @@ export default function Navbar() {
 
           <Link
             href="/signin"
-            className="p-2  btn-outline btn btn-primary btn-sm text-white text-md"
+            className="p-2  btn-outline btn btn-accent btn-sm text-white text-md"
           >
             Sign In
           </Link>
@@ -37,4 +38,5 @@ export default function Navbar() {
       </div>
     </nav>
   );
-}
+};
+export default LoggedOutNavBar;
