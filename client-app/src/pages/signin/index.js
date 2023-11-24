@@ -2,10 +2,36 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '@/context/AuthContext'; // Adjust the import path as needed
+import TextField from '@mui/material/TextField';
+import withAuthRedirect from '@/hoc/withAuthRedirect';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+const textFieldStyle = {
+  '& label.Mui-focused': {
+    color: 'white',
+  },
+  '& label': {
+    color: 'white',
+  },
+  '& .MuiInputBase-input': {
+    color: 'white',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: 'white',
+    },
+    '&:hover fieldset': {
+      borderColor: 'white',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'white',
+    },
+  },
+};
 
-export default function SignInPage() {
+function SignInPage() {
   const { login } = useAuth();
-
+  const Router = useRouter();
   const initialValues = {
     userName: '',
     passWord: '',
@@ -20,6 +46,7 @@ export default function SignInPage() {
     console.log('onSubmit values ', values);
     try {
       await login(values);
+      Router.replace('profile');
       setSubmitting(false);
       // Handle successful login, e.g., redirect or show a success message
     } catch (error) {
@@ -29,71 +56,66 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-xs bg-white rounded-lg shadow-md p-6">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Auction App</h1>
-          <p className="mt-2 text-lg text-gray-900">
-            Welcome back, please sign in.
-          </p>
-        </div>
+    <div className="flex min-h-screen flex-1 flex-col justify-start px-6 py-32 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md lg:w-1/3">
+        <h1 className="mt-6 text-center text-5xl font-bold leading-9 text-white">
+          Sign In
+        </h1>
+        <p className="mt-2 text-center text-lg text-gray-300">
+          Welcome back, please sign in.
+        </p>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
-          <Form className="space-y-6">
-            <div>
-              <label
-                htmlFor="userName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                User Name
-              </label>
-              <Field
+          {({ handleChange, handleBlur, values, touched, errors }) => (
+            <Form className="mt-8 space-y-6">
+              <TextField
                 id="userName"
                 name="userName"
-                type="text"
-                className="mt-1 block w-full px-3 py-2 bg-gray-200 border rounded-md text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Username"
+                required
+                fullWidth
+                label="User Name"
+                value={values.userName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.userName && Boolean(errors.userName)}
+                helperText={touched.userName && errors.userName}
+                sx={textFieldStyle}
               />
-              <ErrorMessage
-                name="userName"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="passWord"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <Field
+
+              <TextField
                 id="passWord"
                 name="passWord"
                 type="password"
-                className="mt-1 block w-full px-3 py-2 bg-gray-200 border rounded-md text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="********"
+                required
+                fullWidth
+                label="Password"
+                value={values.passWord}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.passWord && Boolean(errors.passWord)}
+                helperText={touched.passWord && errors.passWord}
+                sx={textFieldStyle}
               />
-              <ErrorMessage
-                name="passWord"
-                component="div"
-                className="text-red-500 text-xs italic"
-              />
-            </div>
-            <div className="flex justify-center">
-              <button
-                type="submit"
-                className="w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-              >
+              <button type="submit" className="w-full btn btn-primary">
                 Sign In
               </button>
-            </div>
-          </Form>
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-1 sm:space-x-4 items-center justify-center my-10">
+                <h3 className="text-gray-200">Don&apos;t have an account?</h3>
+                <Link
+                  href="/signup"
+                  className="btn btn-accent btn-outline btn-sm "
+                >
+                  Sign Up
+                </Link>
+              </div>
+            </Form>
+          )}
         </Formik>
       </div>
     </div>
   );
 }
+export default withAuthRedirect(SignInPage);

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.EECS4413.UserServiceApp.model.User;
@@ -96,9 +97,24 @@ public class UserController {
 		String token = userServices.authenticate(credentials.getUserName(), credentials.getPassWord());
 
 		if (token != null) {
+			System.out.println("Token not null in /sign-in: " + token);
 			HttpHeaders headers = new HttpHeaders();
-			headers.add(HttpHeaders.SET_COOKIE, token);
-			return ResponseEntity.ok().headers(headers).body("User authenticated successfully");
+
+			// Create a cookie
+			ResponseCookie cookie = ResponseCookie.from("auth-token", token)
+					.httpOnly(true) // Secure cookie, not accessible via JavaScript
+					.path("/") // Available for entire application
+					// .secure(true) // Uncomment this for HTTPS only
+					.build();
+
+			// Add cookie to the headers
+			headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
+			User user = userServices.getUserFromToken(token);
+
+			System.out.println("Headers in /sign-in: " + headers.toString());
+
+			// Return response entity with headers
+			return ResponseEntity.ok().headers(headers).body(user);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
 		}
@@ -108,10 +124,14 @@ public class UserController {
 	@ApiResponse(responseCode = "200", description = "User details retrieved successfully", content = @Content(schema = @Schema(implementation = User.class)))
 	@ApiResponse(responseCode = "401", description = "Unauthorized - Invalid Token", content = @Content(schema = @Schema(implementation = String.class)))
 	@GetMapping("/me")
-	public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token) {
-		token = token.split(" ")[1];
+	public ResponseEntity<?> getUserDetails(@CookieValue(name = "auth-token", required = false) String token) {
+		if (token == null || token.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized - No Token Provided");
+		}
+
 		User user = userServices.getUserFromToken(token);
 		if (user != null) {
+			System.out.println("User: " + user);
 			return ResponseEntity.ok(user);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized - Invalid Token");

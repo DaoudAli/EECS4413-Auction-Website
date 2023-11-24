@@ -26,7 +26,7 @@ public class JWTService {
     private UserRepository userRepository; // Inject the UserRepository
     @Value("${jwt.secret.key}")
     private String SECRET_KEY; // Replace with your actual secret key
-    private static final long TOKEN_EXPIRY = 3600000; // 1 hour in milliseconds, adjust as needed
+    private static final long TOKEN_EXPIRY = 360000000; // 1 hour in milliseconds, adjust as needed
 
     public String generateToken(User user) {
         long nowMillis = System.currentTimeMillis();
