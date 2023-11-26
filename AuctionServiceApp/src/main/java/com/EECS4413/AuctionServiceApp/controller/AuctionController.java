@@ -6,6 +6,7 @@ import com.EECS4413.AuctionServiceApp.database.AuctionRepository;
 import com.EECS4413.AuctionServiceApp.database.BidRepository;
 import com.EECS4413.AuctionServiceApp.dto.ItemDTO;
 import com.EECS4413.AuctionServiceApp.model.*;
+import com.EECS4413.AuctionServiceApp.model.Auction.AuctionStatus;
 import com.EECS4413.AuctionServiceApp.services.CatalogueServiceClient;
 
 import feign.FeignException;
@@ -277,6 +278,25 @@ public class AuctionController {
                 .stream()
                 .max(Comparator.comparing(Bid::getAmount))
                 .orElse(null);
+    }
+
+    @PostMapping("/{itemId}/new-auction")
+    public ResponseEntity<?> crateNewAuction(@PathVariable Long auctionId, @PathVariable Long itemId) {
+        // Check to see if this auction already exists for this item
+        Optional<Auction> auctionOp = auctionRepository.findById(itemId);
+
+        // if the auction already exists, then return a HTTP response saying it already
+        // exists
+        if (auctionOp.isPresent()) {
+            return new ResponseEntity<>("Auction already exists", HttpStatus.ALREADY_REPORTED);
+        }
+
+        // if auction does not exist, add it to the database, and it will give it an
+        // automatic auctionId
+        Auction newAuction = new Auction(itemId, AuctionStatus.ACTIVE);
+
+        auctionRepository.save(newAuction);
+        return new ResponseEntity<>("Auction is now created", HttpStatus.OK);
     }
 
 }
