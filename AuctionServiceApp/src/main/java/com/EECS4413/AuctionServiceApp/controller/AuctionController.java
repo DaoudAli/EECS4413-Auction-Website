@@ -185,10 +185,10 @@ public class AuctionController {
     @Operation(summary = "Place a 'Buy Now' bid on an item up for Dutch auction", description = "Immediately purchase an item at its 'Buy Now' price in a Dutch auction")
     @ApiResponse(responseCode = "201", description = "Item purchased successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
     @ApiResponse(responseCode = "400", description = "Item not available for 'Buy Now'")
-    @PostMapping("/{itemId}/buy-now")
-    public ResponseEntity<?> placeDutchAuctionBid(@PathVariable Long itemId, @RequestBody Bid bid) {
+    @PostMapping("/{auctionId}/buy-now")
+    public ResponseEntity<?> placeDutchAuctionBid(@PathVariable Long auctionId, @RequestBody Bid bid) {
 
-        Optional<Auction> optionalAuction = auctionRepository.findByItemId(itemId);
+        Optional<Auction> optionalAuction = auctionRepository.findByItemId(auctionId);
 
         if (!optionalAuction.isPresent()) {
             return new ResponseEntity<>("Auction not found.", HttpStatus.NOT_FOUND);
@@ -226,9 +226,9 @@ public class AuctionController {
     @Operation(summary = "Check auction status", description = "Get the status of an auction, including whether it has ended and details of the winning bidder")
     @ApiResponse(responseCode = "200", description = "Auction status retrieved successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
     @ApiResponse(responseCode = "404", description = "Auction not found")
-    @GetMapping("/{itemId}/status")
-    public ResponseEntity<?> getAuctionStatus(@PathVariable Long itemId) {
-        Optional<Auction> optionalAuction = auctionRepository.findById(itemId);
+    @GetMapping("/{auctionId}/status")
+    public ResponseEntity<?> getAuctionStatus(@PathVariable Long auctionId) {
+        Optional<Auction> optionalAuction = auctionRepository.findById(auctionId);
         if (!optionalAuction.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Auction not found.");
         }
@@ -281,7 +281,7 @@ public class AuctionController {
     }
 
     @PostMapping("/{itemId}/new-auction")
-    public ResponseEntity<?> crateNewAuction(@PathVariable Long auctionId, @PathVariable Long itemId) {
+    public ResponseEntity<?> crateNewAuction(@PathVariable Long itemId) {
         // Check to see if this auction already exists for this item
         Optional<Auction> auctionOp = auctionRepository.findById(itemId);
 
