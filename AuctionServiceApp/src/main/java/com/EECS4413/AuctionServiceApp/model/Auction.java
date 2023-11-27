@@ -2,9 +2,10 @@ package com.EECS4413.AuctionServiceApp.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.EECS4413.AuctionServiceApp.dto.ItemDTO;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 public class Auction {
@@ -28,19 +29,22 @@ public class Auction {
     @Enumerated(EnumType.STRING)
     private AuctionStatus status = AuctionStatus.ACTIVE; // Default status
 
-    public Auction() {
-    }
+    @Column(nullable = false)
+    private LocalDateTime startTime;
 
-    // Constructors, getters, setters, and other methods
-    public Auction(Long itemId, AuctionStatus status) {
-        this.itemId = itemId;
-        this.status = status;
-    }
+    @Column(nullable = false)
+    private LocalDateTime endTime;
+
+    @Column(name = "start_bid_price", nullable = false, scale = 2)
+    private BigDecimal startBidPrice;
+
+    @Column(name = "current_bid_price", scale = 2)
+    private BigDecimal currentBidPrice;
 
     public void addItemDetails(ItemDTO item) {
         this.itemId = item.getId();
         try {
-            this.type = AuctionType.valueOf(item.getTypeOfAuction().toUpperCase());
+            // this.type = AuctionType.valueOf(item.getTypeOfAuction().toUpperCase());
         } catch (IllegalArgumentException e) {
             // Handle the case where the string does not match any enum constant
         }
@@ -105,6 +109,48 @@ public class Auction {
      */
     public void setItemId(Long itemId) {
         this.itemId = itemId;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        if (startTime == null || startTime.isBefore(LocalDateTime.of(1, 1, 1, 0, 0))) {
+            System.out.println("Zero or invalid start time was set, defaulting to current time.");
+            this.startTime = LocalDateTime.now(ZoneId.systemDefault());
+        } else {
+            this.startTime = startTime;
+        }
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        if (endTime == null || endTime.isBefore(LocalDateTime.of(1, 1, 1, 0, 0))) {
+            System.out.println("Zero or invalid end time was set, defaulting to current time.");
+            this.endTime = LocalDateTime.now(ZoneId.systemDefault());
+        } else {
+            this.endTime = endTime;
+        }
+    }
+
+    public BigDecimal getStartBidPrice() {
+        return startBidPrice;
+    }
+
+    public void setStartBidPrice(BigDecimal startBidPrice) {
+        this.startBidPrice = startBidPrice;
+    }
+
+    public BigDecimal getCurrentBidPrice() {
+        return currentBidPrice;
+    }
+
+    public void setCurrentBidPrice(BigDecimal currentBidPrice) {
+        this.currentBidPrice = currentBidPrice;
     }
 
 }

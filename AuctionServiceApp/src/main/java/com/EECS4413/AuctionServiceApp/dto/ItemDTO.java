@@ -1,19 +1,11 @@
 package com.EECS4413.AuctionServiceApp.dto;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 public class ItemDTO {
     // Define AuctionType enum here
 
     private Long id;
     private String name;
     private String description;
-    private String typeOfAuction;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private BigDecimal startBidPrice;
-    private BigDecimal currentBidPrice;
     private Long sellerId;
     private String imageUrls;
     private String keywords;
@@ -29,14 +21,6 @@ public class ItemDTO {
     }
 
     // ... other getters and setters ...
-
-    public BigDecimal getCurrentBidPrice() {
-        return currentBidPrice;
-    }
-
-    public void setCurrentBidPrice(BigDecimal currentBidPrice) {
-        this.currentBidPrice = currentBidPrice;
-    }
 
     /**
      * @return String return the name
@@ -64,62 +48,6 @@ public class ItemDTO {
      */
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    /**
-     * @return AuctionType return the typeOfAuction
-     */
-    public String getTypeOfAuction() {
-        return typeOfAuction;
-    }
-
-    /**
-     * @param typeOfAuction the typeOfAuction to set
-     */
-    public void setTypeOfAuction(String typeOfAuction) {
-        this.typeOfAuction = typeOfAuction;
-    }
-
-    /**
-     * @return LocalDateTime return the startTime
-     */
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    /**
-     * @param startTime the startTime to set
-     */
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    /**
-     * @return LocalDateTime return the endTime
-     */
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    /**
-     * @param endTime the endTime to set
-     */
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    /**
-     * @return BigDecimal return the startBidPrice
-     */
-    public BigDecimal getStartBidPrice() {
-        return startBidPrice;
-    }
-
-    /**
-     * @param startBidPrice the startBidPrice to set
-     */
-    public void setStartBidPrice(BigDecimal startBidPrice) {
-        this.startBidPrice = startBidPrice;
     }
 
     /**
