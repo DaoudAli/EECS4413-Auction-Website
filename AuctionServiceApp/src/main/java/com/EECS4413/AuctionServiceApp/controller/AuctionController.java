@@ -206,8 +206,7 @@ public class AuctionController {
                     .body("Only dutch auctions are eligible to buy now.");
         }
         // Verify buyNowBid amount
-        if (bid.getAmount().compareTo(
-                catalogueServiceClient.getItemById(auction.getItemId()).getStartBidPrice().doubleValue()) != 0) {
+        if (bid.getAmount().compareTo(auction.getStartBidPrice().doubleValue()) != 0) {
             // getBuyNowPrice method
             return new ResponseEntity<>("Invalid bid amount for 'Buy Now'.", HttpStatus.BAD_REQUEST);
         }
@@ -281,7 +280,7 @@ public class AuctionController {
     }
 
     @PostMapping("/{itemId}/new-auction")
-    public ResponseEntity<?> crateNewAuction(@PathVariable Long itemId) {
+    public ResponseEntity<?> createNewAuction(@PathVariable Long itemId, @RequestBody Auction newAuction) {
         // Check to see if this auction already exists for this item
         Optional<Auction> auctionOp = auctionRepository.findById(itemId);
 
@@ -293,8 +292,6 @@ public class AuctionController {
 
         // if auction does not exist, add it to the database, and it will give it an
         // automatic auctionId
-        Auction newAuction = new Auction(itemId, AuctionStatus.ACTIVE);
-
         auctionRepository.save(newAuction);
         return new ResponseEntity<>("Auction is now created", HttpStatus.OK);
     }

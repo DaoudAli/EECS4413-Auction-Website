@@ -44,20 +44,8 @@ public class CatalogueService {
                     if (updatedItem.getDescription() != null) {
                         existingItem.setDescription(updatedItem.getDescription());
                     }
-                    if (updatedItem.getTypeOfAuction() != null) {
-                        existingItem.setTypeOfAuction(updatedItem.getTypeOfAuction());
-                    }
-                    if (updatedItem.getStartTime() != null) {
-                        existingItem.setStartTime(updatedItem.getStartTime());
-                    }
-                    if (updatedItem.getEndTime() != null) {
-                        existingItem.setEndTime(updatedItem.getEndTime());
-                    }
-                    if (updatedItem.getStartBidPrice() != null) {
-                        existingItem.setStartBidPrice(updatedItem.getStartBidPrice());
-                    }
-                    if (updatedItem.getCurrentBidPrice() != null) {
-                        existingItem.setCurrentBidPrice(updatedItem.getCurrentBidPrice());
+                    if (updatedItem.getKeywords() != null) {
+                        existingItem.setKeywords(updatedItem.getKeywords());
                     }
                     return itemDatabase.save(existingItem);
                 });

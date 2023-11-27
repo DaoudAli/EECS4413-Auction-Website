@@ -64,6 +64,25 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.2.1</version>
+				<configuration>
+                <from>
+                    <image>openjdk:17-alpine</image>
+                </from>
+                <to>
+                    <image>catalogue-service</image>
+                </to>
+                <container>
+                    <ports>
+                        <port>8080</port>
+                    </ports>
+                    <format>OCI</format>
+                </container>
+            	</configuration>
+        	</plugin>
 		</plugins>
 	</build>
 
