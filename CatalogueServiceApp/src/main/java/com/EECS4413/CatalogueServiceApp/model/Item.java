@@ -1,8 +1,6 @@
 package com.EECS4413.CatalogueServiceApp.model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "items")
@@ -30,46 +28,6 @@ public class Item {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public AuctionType getTypeOfAuction() {
-        return typeOfAuction;
-    }
-
-    public void setTypeOfAuction(AuctionType typeOfAuction) {
-        this.typeOfAuction = typeOfAuction;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public BigDecimal getStartBidPrice() {
-        return startBidPrice;
-    }
-
-    public void setStartBidPrice(BigDecimal startBidPrice) {
-        this.startBidPrice = startBidPrice;
-    }
-
-    public BigDecimal getCurrentBidPrice() {
-        return currentBidPrice;
-    }
-
-    public void setCurrentBidPrice(BigDecimal currentBidPrice) {
-        this.currentBidPrice = currentBidPrice;
     }
 
     public Long getSellerId() {
@@ -106,22 +64,6 @@ public class Item {
     @Column(nullable = false)
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type_of_auction", nullable = false)
-    private AuctionType typeOfAuction;
-
-    @Column(name = "start_time", nullable = false)
-    private LocalDateTime startTime;
-
-    @Column(name = "end_time", nullable = false)
-    private LocalDateTime endTime;
-
-    @Column(name = "start_bid_price", nullable = false)
-    private BigDecimal startBidPrice;
-
-    @Column(name = "current_bid_price")
-    private BigDecimal currentBidPrice;
-
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
@@ -131,21 +73,12 @@ public class Item {
     @Column
     private String keywords;
 
-    public enum AuctionType {
-        FORWARD, DUTCH, forward, dutch
-    }
-
     @Override
     public String toString() {
         return "Item{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", typeOfAuction=" + typeOfAuction +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", startBidPrice=" + startBidPrice +
-                ", currentBidPrice=" + currentBidPrice +
                 ", sellerId=" + sellerId +
                 ", imageUrls='" + imageUrls + '\'' +
                 ", keywords='" + keywords + '\'' +
