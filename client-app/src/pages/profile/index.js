@@ -1,10 +1,10 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import withAuth from '@/hoc/withAuth';
-import { Gavel, Tag, PlusSquare, Building, CheckCircle } from 'lucide-react';
+import Image from "next/image";
+import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import withAuth from "@/hoc/withAuth";
+import { Gavel, Tag, PlusSquare, Building, CheckCircle } from "lucide-react";
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 function Profile() {
@@ -12,16 +12,16 @@ function Profile() {
 
   const cards = [
     {
-      name: 'Your Bids',
-      href: '/bids',
+      name: "Your Bids",
+      href: "/bids",
       icon: Gavel,
-      amount: 'You currently have no active bids...',
+      amount: "You currently have no active bids...",
     },
     {
-      name: 'Your Auction Items',
-      href: '/items',
+      name: "Your Auction Items",
+      href: "/items",
       icon: Tag,
-      amount: 'You currently have no items listed...',
+      amount: "You currently have no items listed...",
     },
   ];
 
@@ -39,7 +39,7 @@ function Profile() {
                   className="hidden h-16 w-16 rounded-full sm:block bg-gray-100"
                   src={
                     currentUser?.avatar_url ||
-                    'https://www.svgrepo.com/show/496485/profile-circle.svg'
+                    "https://www.svgrepo.com/show/496485/profile-circle.svg"
                   }
                   alt="User Avatar"
                   width={40}
@@ -51,13 +51,13 @@ function Profile() {
                       className="h-16 w-16 rounded-full sm:hidden"
                       src={
                         currentUser?.avatar_url ||
-                        'https://www.svgrepo.com/show/496485/profile-circle.svg'
+                        "https://www.svgrepo.com/show/496485/profile-circle.svg"
                       }
                       alt="User Avatar"
                       width={30}
                       height={30}
                     />
-                    <h1 className="ml-3 text-3xl font-bold leading-7 text-gray-300 sm:truncate sm:leading-9">
+                    <h1 className="ml-3 text-3xl font-bold leading-7 text-black-300 sm:truncate sm:leading-9">
                       Welcome, {currentUser?.firstName}
                     </h1>
                   </div>
@@ -68,7 +68,7 @@ function Profile() {
                         className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                         aria-hidden="true"
                       />
-                      {currentUser?.street}, {currentUser?.province},{' '}
+                      {currentUser?.street}, {currentUser?.province},{" "}
                       {currentUser?.country}
                     </dd>
                     <dt className="sr-only">Account status</dt>
@@ -113,7 +113,7 @@ function Profile() {
                         <dt className="truncate text-lg font-bold text-gray-300">
                           {card.name}
                         </dt>
-                        <dd className="text-sm font-light text-gray-600 my-2">
+                        <dd className="text-sm font-light text-white my-2">
                           {card.amount}
                         </dd>
                       </dl>
@@ -135,7 +135,7 @@ function Profile() {
           </div>
           {/* Sell Item Button */}
           <div className="mt-6">
-            <Link href="/sell-item" className="btn btn-primary">
+            <Link href="/catalogue/sell" className="btn btn-primary">
               <PlusSquare className="inline mr-2" /> Sell an Item
             </Link>
           </div>
