@@ -60,7 +60,7 @@ Instructions to run the system locally can be found below. There are backend ser
    - 
 ### Swagger UI Documentation
 
-Each service provides Swagger UI documentation for its API endpoints. You can access these documents at:
+Each service provides Swagger UI documentation for its API endpoints. While the service is running, you can access these documents at:
 
 - Catalogue Service Swagger UI: `http://localhost:3100/swagger-ui/index.html#`
 - Auction Service Swagger UI: `http://localhost:3200/swagger-ui/index.html#`
