@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
+import java.util.Collections;
 import java.util.List;
 
 //**********************************************************************************************
@@ -112,4 +113,21 @@ public class CatalogueController {
                     .body("Unable to delete. Item with ID " + id + " not found.");
         }
     }
+
+    // Get all items by Seller ID
+    @Operation(summary = "Get all items by Seller ID", description = "Retrieve all items associated with a seller ID")
+    @ApiResponse(responseCode = "200", description = "Items found", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Item[].class)) })
+    @ApiResponse(responseCode = "404", description = "No items found for the seller")
+    @GetMapping("/items/seller/{sellerId}")
+    public ResponseEntity<List<Item>> findItemsBySellerId(@PathVariable Long sellerId) {
+        List<Item> items = catalogueService.findItemsBySellerId(sellerId);
+        if (!items.isEmpty()) {
+            return ResponseEntity.ok(items);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.emptyList()); // Or a suitable response indicating no items found
+        }
+    }
+
 }

@@ -58,4 +58,9 @@ public class CatalogueService {
                     return true;
                 }).orElse(false);
     }
+
+    public List<Item> findItemsBySellerId(Long sellerId) {
+        return itemDatabase.findBySellerId(sellerId);
+    }
+
 }

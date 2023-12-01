@@ -3,13 +3,43 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import withAuth from "@/hoc/withAuth";
 import { Gavel, Tag, PlusSquare, Building, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { catalogueServiceApi } from "@/api/spring-services-api";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 function Profile() {
   const { currentUser } = useAuth();
+  const [userItemsData, setUserItemsData] = useState(null);
 
+  // Get Items listed
+  useEffect(() => {
+    // Define the function within useEffect
+    async function fetchAdditionalUserData() {
+      try {
+        if (currentUser && currentUser.id) {
+          const response = await catalogueServiceApi.get(
+            `/items/seller/${currentUser.id}`
+          );
+          setUserItemsData(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch additional user data:", error);
+      }
+    }
+    fetchAdditionalUserData();
+  }, [currentUser]);
+
+  useEffect(() => {
+    // Save to localStorage whenever userItemsData changes
+    if (userItemsData) {
+      localStorage.setItem("userItemsData", JSON.stringify(userItemsData));
+    }
+  }, [userItemsData]);
+
+  const userItemsCount =
+    userItemsData && userItemsData.length > 0 ? userItemsData.length : 0;
   const cards = [
     {
       name: "Your Bids",
@@ -19,9 +49,9 @@ function Profile() {
     },
     {
       name: "Your Auction Items",
-      href: "/items",
+      href: "/catalogue/results",
       icon: Tag,
-      amount: "You currently have no items listed...",
+      amount: `You currently have ${userItemsCount} items listed...`,
     },
   ];
 

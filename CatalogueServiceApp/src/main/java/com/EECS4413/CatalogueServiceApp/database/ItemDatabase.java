@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ItemDatabase extends JpaRepository<Item, Long> {
     List<Item> findByKeywordsContainingIgnoreCase(String keyword);
+
+    List<Item> findBySellerId(Long sellerId);
 }
