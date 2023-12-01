@@ -72,6 +72,9 @@ Through these interfaces, users can view all available routes, their specificati
 
 After starting the services and the frontend application, you can use the platform to browse the catalogue, participate in auctions, manage user accounts, and process payments. Each service's API can be accessed for extended functionalities or integrations.
 
+## Database
+Our MySQL database is hosted online. We will send you the necessary credential files during submission. 
+
 ---
 
 Please ensure that all your local environment settings are properly configured to connect to the necessary services and databases.
