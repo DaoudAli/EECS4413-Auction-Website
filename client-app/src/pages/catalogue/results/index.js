@@ -1,36 +1,46 @@
+import { useState, useEffect } from "react";
 const items = [
   {
-    id: '1',
-    name: 'Vintage Bicycle',
-    currentPrice: '150',
-    auctionType: 'Dutch',
-    remainingTime: '2h 15m',
+    id: "1",
+    name: "Vintage Bicycle",
+    currentPrice: "150",
+    auctionType: "Dutch",
+    remainingTime: "2h 15m",
   },
   {
-    id: '2',
-    name: 'Antique Car Model',
-    currentPrice: '375',
-    auctionType: 'Forward',
-    remainingTime: '4h 30m',
+    id: "2",
+    name: "Antique Car Model",
+    currentPrice: "375",
+    auctionType: "Forward",
+    remainingTime: "4h 30m",
   },
   {
-    id: '3',
-    name: 'Classic Vinyl Record',
-    currentPrice: '75',
-    auctionType: 'Dutch',
-    remainingTime: '1h 45m',
+    id: "3",
+    name: "Classic Vinyl Record",
+    currentPrice: "75",
+    auctionType: "Dutch",
+    remainingTime: "1h 45m",
   },
   {
-    id: '4',
-    name: 'Handcrafted Chess Set',
-    currentPrice: '250',
-    auctionType: 'Forward',
-    remainingTime: '3h 10m',
+    id: "4",
+    name: "Handcrafted Chess Set",
+    currentPrice: "250",
+    auctionType: "Forward",
+    remainingTime: "3h 10m",
   },
   // ...you can add more items as needed
 ];
 
 export default function SearchResultsPage() {
+  const [userItemsData, setUserItemsData] = useState([]);
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("userItemsData");
+    if (storedData) {
+      setUserItemsData(JSON.parse(storedData));
+    }
+  }, []);
+
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="container mx-auto p-4">

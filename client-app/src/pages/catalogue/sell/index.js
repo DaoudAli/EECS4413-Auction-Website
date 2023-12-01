@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function AuctionItemForm() {
   // State hooks for form inputs could be added here
@@ -116,9 +116,11 @@ export default function AuctionItemForm() {
           </p>
         </div>
         <div className="flex justify-center">
-          <button className="mt-4 btn btn-primary" type="submit">
-            List Item for Auction
-          </button>
+          <Link href="/itemListed">
+            <button className="mt-4 btn btn-primary" type="submit">
+              List Item for Auction
+            </button>
+          </Link>
         </div>
         {/* Replace with Link component if there's a specific path to navigate */}
         {/* <Link href="/path-to-navigate">
