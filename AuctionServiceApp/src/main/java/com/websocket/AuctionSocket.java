@@ -29,6 +29,7 @@ import com.EECS4413.AuctionServiceApp.model.Bid;
 @EnableWebSocket
 public class AuctionSocket implements WebSocketConfigurer {
 
+    // Repos for when we retrieve the highest bids
     private final AuctionRepository auctionRepository;
     private final BidRepository bidRepository;
 
@@ -37,6 +38,8 @@ public class AuctionSocket implements WebSocketConfigurer {
         this.bidRepository = bidRepository;
     }
 
+    // registers the websocket handler to the specified path, and the WebSockHandler
+    // uses texthandler for the text of auction price
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 
@@ -45,6 +48,8 @@ public class AuctionSocket implements WebSocketConfigurer {
         throw new UnsupportedOperationException("Unimplemented method 'registerWebSocketHandlers'");
     }
 
+    // The intercepter basically just is used to handshake with the http request and
+    // add the auctionID as an attribute to the websocket
     @Bean
     public HandshakeInterceptor auctionInterceptor() {
         return new HandshakeInterceptor() {
@@ -72,6 +77,8 @@ public class AuctionSocket implements WebSocketConfigurer {
         };
     }
 
+    // Here is where the auction and the highest bid is found
+    // ISSUE: Unsure of how to send auction price to the front end
     @Bean
     public WebSocketHandler auctionHandler() {
         return new WebSockHandler() {
