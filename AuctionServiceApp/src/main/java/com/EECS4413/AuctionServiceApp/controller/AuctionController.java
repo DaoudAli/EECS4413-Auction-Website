@@ -292,6 +292,8 @@ public class AuctionController {
 
         // if auction does not exist, add it to the database, and it will give it an
         // automatic auctionId
+        // Set default values for any missing fields
+        newAuction.setDefaultValues();
         auctionRepository.save(newAuction);
         return new ResponseEntity<>("Auction is now created", HttpStatus.OK);
     }
