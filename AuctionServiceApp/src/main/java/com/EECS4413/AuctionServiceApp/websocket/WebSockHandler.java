@@ -1,4 +1,4 @@
-package com.websocket;
+package com.EECS4413.AuctionServiceApp.websocket;
 
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 

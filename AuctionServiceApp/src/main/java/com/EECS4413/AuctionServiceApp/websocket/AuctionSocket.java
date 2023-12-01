@@ -1,4 +1,4 @@
-package com.websocket;
+package com.EECS4413.AuctionServiceApp.websocket;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -42,7 +42,7 @@ public class AuctionSocket implements WebSocketConfigurer {
     // uses texthandler for the text of auction price
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-
+        // Need to put the whole path
         registry.addHandler(new WebSockHandler(), "/auctionId");
 
         throw new UnsupportedOperationException("Unimplemented method 'registerWebSocketHandlers'");
@@ -78,30 +78,31 @@ public class AuctionSocket implements WebSocketConfigurer {
     }
 
     // Here is where the auction and the highest bid is found
-    // ISSUE: Unsure of how to send auction price to the front end
     @Bean
     public WebSocketHandler auctionHandler() {
         return new WebSockHandler() {
             public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-                // Retrieve the auction id from the websocket session (copied during the
-                // handshake)
+                // Retrieve the auction id from the websocket session
                 // Gets the auction ID
                 Long auctionId = (Long) session.getAttributes().get("auctionId");
 
                 Optional<Auction> auction = auctionRepository.findById(auctionId);
+
+                String responseMessage = "";
 
                 if (auction.isPresent()) {
                     Bid highestBid = bidRepository.findByAuctionId(auction.get().getId()).stream()
                             .max(Comparator.comparing(Bid::getAmount))
                             .orElse(null);
                     if (highestBid != null) {
-                        // post bid
+                        responseMessage = highestBid.getAmount().toString();
                     } else {
-                        // post $0
+                        responseMessage = "0";
                     }
-                } else {
-                    // post it was not found
+                    session.sendMessage(new TextMessage(responseMessage));
                 }
+                responseMessage = "0";
+                session.sendMessage(new TextMessage(responseMessage));
             }
         };
     }
