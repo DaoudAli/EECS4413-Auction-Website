@@ -4,26 +4,51 @@ import { useAuth } from "@/context/AuthContext";
 import withAuth from "@/hoc/withAuth";
 import { Gavel, Tag, PlusSquare, Building, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
-import { catalogueServiceApi } from "@/api/spring-services-api";
+import {
+  catalogueServiceApi,
+  auctionServiceApi,
+} from "@/api/spring-services-api";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 function Profile() {
   const { currentUser } = useAuth();
-  const [userItemsData, setUserItemsData] = useState(null);
+  const [userItemsData, setUserItemsData] = useState([]);
+  const [userAuctionsData, setUserAuctionsData] = useState([]);
+  const [userBidData, setUserBidData] = useState([]);
 
   // Get Items listed
   useEffect(() => {
     // Define the function within useEffect
     async function fetchAdditionalUserData() {
       try {
+        // Get Items Listed for User
+        let userItemsRes = null;
+        let userAuctionsRes = null;
         if (currentUser && currentUser.id) {
-          const response = await catalogueServiceApi.get(
+          userItemsRes = await catalogueServiceApi.get(
             `/items/seller/${currentUser.id}`
           );
-          setUserItemsData(response.data);
+          setUserItemsData(userItemsRes.data);
         }
+        // Get Auction Items for User
+        userAuctionsRes = await auctionServiceApi.get();
+
+        let userAuctions = [];
+        for (let auction of userAuctionsRes.data) {
+          for (let item of userItemsRes.data) {
+            if (item.id == auction.itemId) {
+              userAuctions.push(auction);
+            }
+          }
+        }
+        setUserAuctionsData(userAuctions);
+
+        // Get Bids placed by User
+        const bidRes = await auctionServiceApi.get(`/${currentUser.id}/bids`);
+        setUserBidData(bidRes.data);
+        console.log(bidRes);
       } catch (error) {
         console.error("Failed to fetch additional user data:", error);
       }
@@ -32,11 +57,20 @@ function Profile() {
   }, [currentUser]);
 
   useEffect(() => {
-    // Save to localStorage whenever userItemsData changes
+    // Save to localStorage whenever userData is recieved / changes
     if (userItemsData) {
       localStorage.setItem("userItemsData", JSON.stringify(userItemsData));
     }
-  }, [userItemsData]);
+    if (userAuctionsData) {
+      localStorage.setItem(
+        "userAuctionsData",
+        JSON.stringify(userAuctionsData)
+      );
+    }
+    if (userBidData) {
+      localStorage.setItem("userBidData", JSON.stringify(userBidData));
+    }
+  }, [userItemsData, userAuctionsData, userBidData]);
 
   const userItemsCount =
     userItemsData && userItemsData.length > 0 ? userItemsData.length : 0;
@@ -45,13 +79,13 @@ function Profile() {
       name: "Your Bids",
       href: "/bids",
       icon: Gavel,
-      amount: "You currently have no active bids...",
+      amount: `You currently have ${userBidData.length} active bids...`,
     },
     {
-      name: "Your Auction Items",
+      name: "Your Items & Auctions",
       href: "/catalogue/results",
       icon: Tag,
-      amount: `You currently have ${userItemsCount} items listed...`,
+      amount: `You currently have ${userItemsCount} items and ${userAuctionsData.length} auctions listed...`,
     },
   ];
 
