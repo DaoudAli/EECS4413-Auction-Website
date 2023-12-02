@@ -12,4 +12,6 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
 
     Optional<Bid> findTopByAuctionIdOrderByAmountDesc(Long auctionId);
 
+    List<Bid> findAllByBidderId(Long bidderId);
+
 }

@@ -49,7 +49,7 @@ public class AuctionController {
     }
 
     @Operation(summary = "Get all auctions", description = "Retrieve a list of all auctions")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved all auctions", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved all auctions", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Auction.class)))
     @GetMapping
     public ResponseEntity<List<Auction>> getAllAuctions() {
         List<Auction> auctions = auctionRepository.findAll();
@@ -103,6 +103,15 @@ public class AuctionController {
     @GetMapping("/{auctionId}/bids")
     public ResponseEntity<List<Bid>> getAllBidsForAuction(@PathVariable Long auctionId) {
         List<Bid> bids = bidRepository.findByAuctionId(auctionId);
+
+        return new ResponseEntity<>(bids, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get all bids for an user", description = "Retrieve a list of all bids for a specific user with bidderId")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved all bids for the item", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
+    @GetMapping("/{bidderId}/bids")
+    public ResponseEntity<List<Bid>> getAllBidsForUser(@PathVariable Long bidderId) {
+        List<Bid> bids = bidRepository.findAllByBidderId(bidderId);
 
         return new ResponseEntity<>(bids, HttpStatus.OK);
     }
