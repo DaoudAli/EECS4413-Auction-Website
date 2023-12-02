@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { auctionServiceApi } from "@/api/spring-services-api";
-
+import { Link } from "lucide-react";
+import { useRouter } from "next/router";
 export default function AuctionItemForm() {
+  // Router for Pages
+  const router = useRouter();
+
   // State hooks for form inputs
   const [selectedItemId, setSelectedItemId] = useState("");
   const [auctionType, setAuctionType] = useState("forward");
@@ -13,6 +17,21 @@ export default function AuctionItemForm() {
   // State hooks for validation errors
   const [errors, setErrors] = useState({});
 
+  // Date conversion helper  method
+  function convertDateToISO(dateString, endOfDay = false) {
+    // Create a new Date object using the date string
+    var date = new Date(dateString);
+
+    // If endOfDay is true, adjust the time to the end of the day
+    if (endOfDay) {
+      date.setHours(23, 59, 59, 999);
+    }
+
+    // Convert the date to ISO 8601 format
+    var isoString = date.toISOString();
+
+    return isoString;
+  }
   // Function to validate form inputs
   const validate = () => {
     let tempErrors = {};
@@ -41,22 +60,24 @@ export default function AuctionItemForm() {
 
   // Handle form submission
   const handleSubmit = async (event) => {
+    console.log("siubmitting");
     event.preventDefault();
     if (!validate()) return;
 
     // Prepare data for API request
     const formData = {
-      selectedItemId,
-      auctionType,
-      auctionStartDate,
-      startingBid: parseFloat(startingBid),
+      itemId: selectedItemId,
+      type: auctionType?.toUpperCase(),
+      startDate: convertDateToISO(auctionStartDate),
+      endDate: convertDateToISO(auctionEndDate),
+      startBidPrice: parseFloat(startingBid),
     };
     console.log(formData);
 
     // API request logic here
     try {
       // Example: await api.post('/api/auction', formData);
-      await auctionServiceApi.post("/");
+      await auctionServiceApi.post(`/${selectedItemId}/new-auction`, formData);
       console.log("Form Submitted", formData);
       // Handle successful submission (e.g., show success message or redirect)
     } catch (error) {
@@ -64,6 +85,8 @@ export default function AuctionItemForm() {
       console.error("Submission failed", error);
       // Show error message to user
     }
+
+    router.push("/catalogue/sell/itemListed");
   };
 
   return (
