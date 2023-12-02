@@ -5,6 +5,9 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.EECS4413.UserServiceApp.authentication.Handler;
+import com.EECS4413.UserServiceApp.authentication.UserExistsHandler;
+import com.EECS4413.UserServiceApp.authentication.ValidPasswordHandler;
 import com.EECS4413.UserServiceApp.database.UserRepository;
 import com.EECS4413.UserServiceApp.model.User;
 
@@ -30,9 +33,18 @@ public class UserServices {
 
 	public String authenticate(String username, String password) {
 		User user = userRepository.findByUserNameAndPassWord(username, password);
-		if (user != null) {
+		// Handler is instantiated
+		Handler handler = new UserExistsHandler(userRepository)
+				.setNextHandler(new ValidPasswordHandler(userRepository));
+
+		// Authorization is instantiated with the handler that is used
+		AuthorizationService authService = new AuthorizationService(handler);
+
+		// If authservice passes, then we generate token
+		if (authService.logIn(username, password)) {
 			return jwtService.generateToken(user);
 		}
+
 		return null;
 	}
 
