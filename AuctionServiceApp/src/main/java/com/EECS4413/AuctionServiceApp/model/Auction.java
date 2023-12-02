@@ -51,6 +51,28 @@ public class Auction {
         // Additional logic to set or convert other item details
     }
 
+    public void setDefaultValues() {
+        if (this.type == null) {
+            this.type = AuctionType.FORWARD; // Default auction type
+        }
+        if (this.status == null) {
+            this.status = AuctionStatus.ACTIVE; // Default auction status
+        }
+        if (this.startTime == null) {
+            this.startTime = LocalDateTime.now(ZoneId.systemDefault()); // Default start time
+        }
+        if (this.endTime == null) {
+            this.endTime = LocalDateTime.now(ZoneId.systemDefault()).plusDays(1); // Default end time
+        }
+        if (this.startBidPrice == null) {
+            this.startBidPrice = BigDecimal.ZERO; // Default starting bid
+        }
+        if (this.currentBidPrice == null) {
+            this.currentBidPrice = BigDecimal.ZERO; // Default current bid
+        }
+        // Other default initializations if necessary
+    }
+
     public void calculateStatus() {
         // Logic to calculate the auction status based on item details and bids
     }
