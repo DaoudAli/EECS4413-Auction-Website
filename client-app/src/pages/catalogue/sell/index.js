@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
-import { auctionServiceApi } from "@/api/spring-services-api";
-import { Link } from "lucide-react";
-import { useRouter } from "next/router";
+import { useState, useEffect } from 'react';
+import { auctionServiceApi } from '@/api/spring-services-api';
+import { Link } from 'lucide-react';
+import { useRouter } from 'next/router';
 export default function AuctionItemForm() {
   // Router for Pages
   const router = useRouter();
 
   // State hooks for form inputs
-  const [selectedItemId, setSelectedItemId] = useState("");
-  const [auctionType, setAuctionType] = useState("forward");
-  const [auctionStartDate, setAuctionStartDate] = useState("");
-  const [auctionEndDate, setAuctionEndDate] = useState("");
-  const [startingBid, setStartingBid] = useState("");
+  const [selectedItemId, setSelectedItemId] = useState('');
+  const [auctionType, setAuctionType] = useState('forward');
+  const [auctionStartDate, setAuctionStartDate] = useState('');
+  const [auctionEndDate, setAuctionEndDate] = useState('');
+  const [startingBid, setStartingBid] = useState('');
   const [userItemsData, setUserItemsData] = useState([]);
 
   // State hooks for validation errors
@@ -35,24 +35,24 @@ export default function AuctionItemForm() {
   // Function to validate form inputs
   const validate = () => {
     let tempErrors = {};
-    tempErrors.selectedItemId = selectedItemId ? "" : "Item name is required";
+    tempErrors.selectedItemId = selectedItemId ? '' : 'Item name is required';
     tempErrors.auctionStartDate = auctionStartDate
-      ? ""
-      : "Auction start date is required";
+      ? ''
+      : 'Auction start date is required';
     tempErrors.auctionEndDate = auctionEndDate
-      ? ""
-      : "Auction end date is required";
+      ? ''
+      : 'Auction end date is required';
     tempErrors.startingBid =
       startingBid && !isNaN(startingBid)
-        ? ""
-        : "Valid starting bid is required";
+        ? ''
+        : 'Valid starting bid is required';
     setErrors(tempErrors);
-    return Object.values(tempErrors).every((x) => x === "");
+    return Object.values(tempErrors).every((x) => x === '');
   };
 
   useEffect(() => {
     // Load item data from localStorage
-    const loadedData = JSON.parse(localStorage.getItem("userItemsData"));
+    const loadedData = JSON.parse(localStorage.getItem('userItemsData'));
     if (loadedData) {
       setUserItemsData(loadedData);
     }
@@ -60,9 +60,10 @@ export default function AuctionItemForm() {
 
   // Handle form submission
   const handleSubmit = async (event) => {
-    console.log("siubmitting");
+    console.log('siubmitting');
     event.preventDefault();
     if (!validate()) return;
+    console.log('Data not set');
 
     // Prepare data for API request
     const formData = {
@@ -72,163 +73,146 @@ export default function AuctionItemForm() {
       endDate: convertDateToISO(auctionEndDate),
       startBidPrice: parseFloat(startingBid),
     };
-    console.log(formData);
+    console.log('Data', formData);
 
     // API request logic here
     try {
       // Example: await api.post('/api/auction', formData);
       await auctionServiceApi.post(`/${selectedItemId}/new-auction`, formData);
-      console.log("Form Submitted", formData);
+      console.log('Form Submitted', formData);
       // Handle successful submission (e.g., show success message or redirect)
     } catch (error) {
       // Handle API request errors
-      console.error("Submission failed", error);
+      console.error('Submission failed', error);
       // Show error message to user
     }
 
-    router.push("/catalogue/sell/itemListed");
+    router.push('/catalogue/sell/itemListed');
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center space-y-8">
-      <form
-        className="grid gap-4 p-4 bg-gray-900 rounded-lg shadow-md w-full max-w-2xl mx-auto"
-        onSubmit={handleSubmit}
-      >
-        <h1 className="text-2xl font-semibold text-white text-center">
-          List an Item for Auction
-        </h1>
-        <div className="border-dashed border-2 border-gray-600 rounded-md flex flex-col items-center justify-center p-4 text-white">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-12 h-12 text-white"
-          >
-            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
-            <path d="M12 12v9"></path>
-            <path d="m16 16-4-4-4 4"></path>
-          </svg>
-          <span className="mt-2 text-white">
-            Drag &amp; drop or click to upload item images
-          </span>
-          <input type="file" className="hidden" multiple />
-        </div>
-        <div className="grid gap-2">
-          <label
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
-            htmlFor="item-name"
-          >
-            Select Item to Auction
-          </label>
-          <select
-            id="item-name"
-            className={`flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-800 text-white ${
-              errors.itemName ? "border-red-500" : ""
-            }`}
-            value={selectedItemId}
-            onChange={(e) => setSelectedItemId(e.target.value)}
-          >
-            <option value="">Select an item</option>
-            {userItemsData.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-          {errors.itemName && <p className="text-red-500">{errors.itemName}</p>}
-        </div>
-        <div className="grid gap-2">
-          <label
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
-            htmlFor="auction-type"
-          >
-            Type of Auction
-          </label>
-          <select
-            className={`flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-800 text-white`}
-            id="auction-type"
-            value={auctionType}
-            onChange={(e) => setAuctionType(e.target.value)}
-          >
-            <option value="FORWARD">Forward</option>
-            <option value="DUTCH">Dutch</option>
-          </select>
-        </div>
-        <div className="grid gap-2">
-          <label
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
-            htmlFor="auctionStartDate"
-          >
-            Auction Start Date
-          </label>
-          <input
-            className={`flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-800 text-white ${
-              errors.auctionStartDate ? "border-red-500" : ""
-            }`}
-            id="auctionStartDate"
-            type="date"
-            value={auctionStartDate}
-            onChange={(e) => setAuctionStartDate(e.target.value)}
-          />
-          {errors.auctionStartDate && (
-            <p className="text-red-500">{errors.auctionStartDate}</p>
-          )}
-        </div>
+    <div className="mx-auto py-20 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl">
+        <form
+          className="grid gap-4 p-4 bg-gray-900 rounded-lg shadow-md w-full max-w-2xl mx-auto"
+          onSubmit={handleSubmit}
+        >
+          <h1 className="text-4xl font-bold text-white text-center">
+            List your Item for Auction
+          </h1>
 
-        <div className="grid gap-2">
-          <label
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
-            htmlFor="auctionEndDate"
-          >
-            Auction End Date
-          </label>
-          <input
-            className={`flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-800 text-white ${
-              errors.auctionEndDate ? "border-red-500" : ""
-            }`}
-            id="auctionEndDate"
-            type="date"
-            value={auctionEndDate}
-            onChange={(e) => setAuctionEndDate(e.target.value)}
-          />
-          {errors.auctionEndDate && (
-            <p className="text-red-500">{errors.auctionEndDate}</p>
-          )}
-        </div>
-        <div className="grid gap-2">
-          <label
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
-            htmlFor="starting-bid"
-          >
-            Starting Bid Price
-          </label>
-          <input
-            className={`flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-800 text-white ${
-              errors.startingBid ? "border-red-500" : ""
-            }`}
-            id="starting-bid"
-            type="text"
-            placeholder="Enter starting bid price"
-            value={startingBid}
-            onChange={(e) => setStartingBid(e.target.value)}
-          />
-          {errors.startingBid && (
-            <p className="text-red-500">{errors.startingBid}</p>
-          )}
-        </div>
-        <div className="flex justify-center">
-          <button className="mt-4 btn btn-primary" type="submit">
-            List Item for Auction
-          </button>
-        </div>
-      </form>
+          <div className="grid gap-2">
+            <label
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
+              htmlFor="item-name"
+            >
+              Select Item to Auction
+            </label>
+            <select
+              id="item-name"
+              className={`flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-800 text-white ${
+                errors.itemName ? 'border-red-500' : ''
+              }`}
+              value={selectedItemId}
+              onChange={(e) => setSelectedItemId(e.target.value)}
+            >
+              <option value="">Select an item</option>
+              {userItemsData.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+            {errors.itemName && (
+              <p className="text-red-500">{errors.itemName}</p>
+            )}
+          </div>
+          <div className="grid gap-2">
+            <label
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
+              htmlFor="auction-type"
+            >
+              Type of Auction
+            </label>
+            <select
+              className={`flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-800 text-white`}
+              id="auction-type"
+              value={auctionType}
+              onChange={(e) => setAuctionType(e.target.value)}
+            >
+              <option value="FORWARD">Forward</option>
+              <option value="DUTCH">Dutch</option>
+            </select>
+          </div>
+          <div className="grid gap-2">
+            <label
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
+              htmlFor="auctionStartDate"
+            >
+              Auction Start Date
+            </label>
+            <input
+              className={`flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-800 text-white ${
+                errors.auctionStartDate ? 'border-red-500' : ''
+              }`}
+              id="auctionStartDate"
+              type="date"
+              value={auctionStartDate}
+              onChange={(e) => setAuctionStartDate(e.target.value)}
+            />
+            {errors.auctionStartDate && (
+              <p className="text-red-500">{errors.auctionStartDate}</p>
+            )}
+          </div>
+
+          <div className="grid gap-2">
+            <label
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
+              htmlFor="auctionEndDate"
+            >
+              Auction End Date
+            </label>
+            <input
+              className={`flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-800 text-white ${
+                errors.auctionEndDate ? 'border-red-500' : ''
+              }`}
+              id="auctionEndDate"
+              type="date"
+              value={auctionEndDate}
+              onChange={(e) => setAuctionEndDate(e.target.value)}
+            />
+            {errors.auctionEndDate && (
+              <p className="text-red-500">{errors.auctionEndDate}</p>
+            )}
+          </div>
+          <div className="grid gap-2">
+            <label
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
+              htmlFor="starting-bid"
+            >
+              Starting Bid Price
+            </label>
+            <input
+              className={`flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-800 text-white ${
+                errors.startingBid ? 'border-red-500' : ''
+              }`}
+              id="starting-bid"
+              type="text"
+              placeholder="Enter starting bid price"
+              value={startingBid}
+              onChange={(e) => setStartingBid(e.target.value)}
+            />
+            {errors.startingBid && (
+              <p className="text-red-500">{errors.startingBid}</p>
+            )}
+          </div>
+          <div className="flex justify-center">
+            <button className="mt-4 btn btn-primary" type="submit">
+              List Item for Auction
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

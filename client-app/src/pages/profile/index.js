@@ -1,15 +1,15 @@
-import Image from "next/image";
-import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import withAuth from "@/hoc/withAuth";
-import { Gavel, Tag, PlusSquare, Building, CheckCircle } from "lucide-react";
-import { useState, useEffect } from "react";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
+import withAuth from '@/hoc/withAuth';
+import { Gavel, Tag, PlusSquare, Building, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import {
   catalogueServiceApi,
   auctionServiceApi,
-} from "@/api/spring-services-api";
+} from '@/api/spring-services-api';
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 function Profile() {
@@ -30,11 +30,15 @@ function Profile() {
           userItemsRes = await catalogueServiceApi.get(
             `/items/seller/${currentUser.id}`
           );
+          console.log(
+            'User response from catalogue service in profile: ',
+            userItemsRes
+          );
           setUserItemsData(userItemsRes.data);
         }
         // Get Auction Items for User
         userAuctionsRes = await auctionServiceApi.get();
-
+        0;
         let userAuctions = [];
         for (let auction of userAuctionsRes.data) {
           for (let item of userItemsRes.data) {
@@ -46,11 +50,13 @@ function Profile() {
         setUserAuctionsData(userAuctions);
 
         // Get Bids placed by User
-        const bidRes = await auctionServiceApi.get(`/${currentUser.id}/bids`);
+        const bidRes = await auctionServiceApi.get(
+          `/${currentUser.id}/user-bids`
+        );
         setUserBidData(bidRes.data);
-        console.log(bidRes);
+        console.log('Bid response from profile: ', bidRes);
       } catch (error) {
-        console.error("Failed to fetch additional user data:", error);
+        console.error('Failed to fetch additional user data:', error);
       }
     }
     fetchAdditionalUserData();
@@ -59,16 +65,16 @@ function Profile() {
   useEffect(() => {
     // Save to localStorage whenever userData is recieved / changes
     if (userItemsData) {
-      localStorage.setItem("userItemsData", JSON.stringify(userItemsData));
+      localStorage.setItem('userItemsData', JSON.stringify(userItemsData));
     }
     if (userAuctionsData) {
       localStorage.setItem(
-        "userAuctionsData",
+        'userAuctionsData',
         JSON.stringify(userAuctionsData)
       );
     }
     if (userBidData) {
-      localStorage.setItem("userBidData", JSON.stringify(userBidData));
+      localStorage.setItem('userBidData', JSON.stringify(userBidData));
     }
   }, [userItemsData, userAuctionsData, userBidData]);
 
@@ -76,14 +82,14 @@ function Profile() {
     userItemsData && userItemsData.length > 0 ? userItemsData.length : 0;
   const cards = [
     {
-      name: "Your Bids",
-      href: "/bids",
+      name: 'Your Bids',
+      href: '/bids',
       icon: Gavel,
       amount: `You currently have ${userBidData.length} active bids...`,
     },
     {
-      name: "Your Items & Auctions",
-      href: "/catalogue/results",
+      name: 'Your Items & Auctions',
+      href: '/catalogue/results',
       icon: Tag,
       amount: `You currently have ${userItemsCount} items and ${userAuctionsData.length} auctions listed...`,
     },
@@ -103,7 +109,7 @@ function Profile() {
                   className="hidden h-16 w-16 rounded-full sm:block bg-gray-100"
                   src={
                     currentUser?.avatar_url ||
-                    "https://www.svgrepo.com/show/496485/profile-circle.svg"
+                    'https://www.svgrepo.com/show/496485/profile-circle.svg'
                   }
                   alt="User Avatar"
                   width={40}
@@ -115,7 +121,7 @@ function Profile() {
                       className="h-16 w-16 rounded-full sm:hidden"
                       src={
                         currentUser?.avatar_url ||
-                        "https://www.svgrepo.com/show/496485/profile-circle.svg"
+                        'https://www.svgrepo.com/show/496485/profile-circle.svg'
                       }
                       alt="User Avatar"
                       width={30}
@@ -132,7 +138,7 @@ function Profile() {
                         className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                         aria-hidden="true"
                       />
-                      {currentUser?.street}, {currentUser?.province},{" "}
+                      {currentUser?.street}, {currentUser?.province},{' '}
                       {currentUser?.country}
                     </dd>
                     <dt className="sr-only">Account status</dt>
@@ -198,9 +204,15 @@ function Profile() {
             ))}
           </div>
           {/* Sell Item Button */}
-          <div className="mt-6">
-            <Link href="/catalogue/sell" className="btn btn-primary">
-              <PlusSquare className="inline mr-2" /> Sell an Item
+          <div className="mt-6 flex">
+            <Link href="/catalogue/add" className="btn btn-primary mx-4">
+              <PlusSquare className="inline m-2" /> Add new item
+            </Link>
+            <Link
+              href="/catalogue/sell"
+              className="btn btn-outline btn-primary mx-4"
+            >
+              <PlusSquare className="inline mr-2" /> List an item
             </Link>
           </div>
         </div>
