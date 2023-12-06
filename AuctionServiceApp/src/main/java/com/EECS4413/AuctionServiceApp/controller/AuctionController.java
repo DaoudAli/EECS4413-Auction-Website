@@ -75,6 +75,20 @@ public class AuctionController {
         }
     }
 
+    @Operation(summary = "Get auction by Item ID", description = "Retrieve details of an auction by its associated Item ID")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved auction details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Auction.class)))
+    @ApiResponse(responseCode = "404", description = "Auction not found for the given Item ID")
+    @GetMapping("/items/{itemId}")
+    public ResponseEntity<?> getAuctionByItemId(@PathVariable Long itemId) {
+        Optional<Auction> auctionOptional = auctionRepository.findByItemId(itemId);
+
+        if (auctionOptional.isPresent()) {
+            return new ResponseEntity<>(auctionOptional.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Auction not found for Item ID: " + itemId, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @Operation(summary = "Get all bids", description = "Retrieve a list of all bids")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved all bids", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
     @GetMapping("/bids")
@@ -109,7 +123,7 @@ public class AuctionController {
 
     @Operation(summary = "Get all bids for an user", description = "Retrieve a list of all bids for a specific user with bidderId")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved all bids for the item", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
-    @GetMapping("/{bidderId}/bids")
+    @GetMapping("/{bidderId}/user-bids")
     public ResponseEntity<List<Bid>> getAllBidsForUser(@PathVariable Long bidderId) {
         List<Bid> bids = bidRepository.findAllByBidderId(bidderId);
 
@@ -120,7 +134,7 @@ public class AuctionController {
     @ApiResponse(responseCode = "201", description = "Bid placed successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
     @ApiResponse(responseCode = "404", description = "Item not found")
     @ApiResponse(responseCode = "400", description = "Invalid bid submission")
-    @PostMapping("/{itemId}/bids")
+    @PostMapping("/{auctionId}/bids")
     public ResponseEntity<?> placeForwardAuctionBid(@PathVariable Long itemId, @RequestBody Bid bid) {
         try {
             // Check if the item exists using the CatalogueServiceClient
@@ -305,6 +319,25 @@ public class AuctionController {
         newAuction.setDefaultValues();
         auctionRepository.save(newAuction);
         return new ResponseEntity<>("Auction is now created", HttpStatus.OK);
+    }
+
+    @PutMapping("/{auctionId}")
+    public ResponseEntity<?> updateAuction(@PathVariable Long auctionId, @RequestBody Auction updatedAuctionDetails) {
+        Optional<Auction> existingAuction = auctionRepository.findById(auctionId);
+
+        if (!existingAuction.isPresent()) {
+            return new ResponseEntity<>("Auction not found", HttpStatus.NOT_FOUND);
+        }
+
+        Auction auction = existingAuction.get();
+
+        auction.setItemId(updatedAuctionDetails.getItemId());
+        auction.setCurrentBidPrice(updatedAuctionDetails.getCurrentBidPrice());
+        auction.setStatus(updatedAuctionDetails.getStatus());
+
+        auctionRepository.save(auction);
+
+        return new ResponseEntity<>("Auction updated successfully", HttpStatus.OK);
     }
 
 }
