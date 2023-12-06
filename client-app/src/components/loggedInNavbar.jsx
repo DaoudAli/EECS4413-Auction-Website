@@ -33,18 +33,18 @@ const LoggedInNavBar = () => {
         </Link>
         <div className="flex items-center gap-2">
           <Link
-            href="/catalogue/sell"
+            href="/catalogue/add"
             className="p-2 hover:bg-gray-700 rounded flex"
           >
-            <CircleDollarSign className="mr-1" />
-            Sell an item
+            <CircleDollarSign className="mx-1 " />
+            <span className="hidden md:block"> Sell an item</span>
           </Link>
           <Link
             href="/catalogue"
             className="p-2 hover:bg-gray-700 rounded flex "
           >
-            <Search className="mr-1" />
-            Buy an item
+            <Search className="mx-1 " />
+            <span className="hidden md:block">Buy an item</span>
           </Link>
           {/* Place for additional links if needed */}
           <Menu as="div" className="relative ml-5 flex-shrink-0">

@@ -2,7 +2,7 @@ package com.EECS4413.CatalogueServiceApp.controller;
 
 import com.EECS4413.CatalogueServiceApp.model.Item;
 import com.EECS4413.CatalogueServiceApp.services.CatalogueService;
-
+import com.EECS4413.CatalogueServiceApp.services.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,7 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,10 +29,12 @@ import java.util.List;
 public class CatalogueController {
 
     private final CatalogueService catalogueService;
+    private final FileService fileService;
 
     @Autowired
-    public CatalogueController(CatalogueService catalogueService) {
+    public CatalogueController(CatalogueService catalogueService, FileService fileService) {
         this.catalogueService = catalogueService;
+        this.fileService = fileService;
     }
 
     // Get a list of all items
@@ -80,10 +86,35 @@ public class CatalogueController {
     @ApiResponse(responseCode = "201", description = "Item created successfully", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Item.class)) })
     @PostMapping("/items")
-    public ResponseEntity<?> addItem(@RequestBody Item item) {
+    public ResponseEntity<?> addItem(@RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestParam("sellerId") Long sellerId,
+            @RequestParam("keywords") String keywords,
+            @RequestParam("images") MultipartFile[] images) {
+
+        // Process the image files and get URLs
+        List<String> imageUrls = Arrays.stream(images)
+                .map(fileService::uploadFile)
+                .collect(Collectors.toList());
+
+        // Create a new Item object
+        Item item = new Item();
+        item.setName(name);
+        item.setDescription(description);
+        item.setSellerId(sellerId);
+        item.setImageUrls(String.join(",", imageUrls)); // Convert List to String
+        item.setKeywords(keywords);
+
+        // Save the item in the database
         Item savedItem = catalogueService.addItem(item);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Item created successfully with ID " + savedItem.getId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
+    }
+
+    private String uploadFileToS3(MultipartFile file) {
+        // Logic to upload file to S3 and return the file URL
+        // Return the URL of the uploaded file
+        return "";
     }
 
     // Update an existing item

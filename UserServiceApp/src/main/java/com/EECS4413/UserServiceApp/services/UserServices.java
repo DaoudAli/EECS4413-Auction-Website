@@ -32,16 +32,19 @@ public class UserServices {
 	}
 
 	public String authenticate(String username, String password) {
+		System.out.println("In authenticate");
 		User user = userRepository.findByUserNameAndPassWord(username, password);
 		// Handler is instantiated
-		Handler handler = new UserExistsHandler(userRepository)
-				.setNextHandler(new ValidPasswordHandler(userRepository));
-
+		Handler handler = new UserExistsHandler(userRepository);
+		handler.setNextHandler(new ValidPasswordHandler(userRepository));
 		// Authorization is instantiated with the handler that is used
 		AuthorizationService authService = new AuthorizationService(handler);
+		System.out.println("In aauhtneticate user:" + user);
+		System.out.println("auth service login: " + authService.logIn(username, password));
 
 		// If authservice passes, then we generate token
 		if (authService.logIn(username, password)) {
+			System.out.println("In auhtneticate service success:" + username);
 			return jwtService.generateToken(user);
 		}
 

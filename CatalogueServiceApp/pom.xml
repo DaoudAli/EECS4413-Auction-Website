@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.1.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
+		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.EECS4413</groupId>
 	<artifactId>CatalogueServiceApp</artifactId>
@@ -29,8 +30,8 @@
 		</dependency>
 
 		<dependency>
-   	 		<groupId>org.springframework.boot</groupId>
-   	 		<artifactId>spring-boot-starter-web</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<!-- MySQL Connector -->
 		<dependency>
@@ -44,6 +45,28 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.21.38</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>1.12.606</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-bom -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-bom</artifactId>
+			<version>1.12.606</version>
+			<type>pom</type>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
+
 
 		<dependency>
 			<groupId>io.github.cdimascio</groupId>
@@ -69,20 +92,20 @@
 				<artifactId>jib-maven-plugin</artifactId>
 				<version>3.2.1</version>
 				<configuration>
-                <from>
-                    <image>openjdk:17-alpine</image>
-                </from>
-                <to>
-                    <image>catalogue-service</image>
-                </to>
-                <container>
-                    <ports>
-                        <port>8080</port>
-                    </ports>
-                    <format>OCI</format>
-                </container>
-            	</configuration>
-        	</plugin>
+					<from>
+						<image>openjdk:17-alpine</image>
+					</from>
+					<to>
+						<image>catalogue-service</image>
+					</to>
+					<container>
+						<ports>
+							<port>8080</port>
+						</ports>
+						<format>OCI</format>
+					</container>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

@@ -9,7 +9,7 @@ import com.EECS4413.UserServiceApp.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
   User findByUserName(String userName);
 
-  User findByPassWord(String passWord);
+  User findBypassWord(String passWord);
 
   List<User> findByIsSeller(boolean isSeller);
 

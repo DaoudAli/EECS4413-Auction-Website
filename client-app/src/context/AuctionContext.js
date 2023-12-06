@@ -18,7 +18,7 @@ export const AuctionProvider = ({ children }) => {
   const fetchAuctions = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await auctionServiceApi.get('/auctions');
+      const response = await auctionServiceApi.get('/');
       setAuctions(response.data);
     } catch (error) {
       console.error('Error fetching auctions:', error);
@@ -27,29 +27,40 @@ export const AuctionProvider = ({ children }) => {
     }
   }, []);
 
+  const getAuctionById = useCallback(async (auctionId) => {
+    setIsLoading(true);
+    try {
+      const response = await auctionServiceApi.get(`/${auctionId}`);
+      setCurrentAuction(response.data);
+    } catch (error) {
+      console.error(`Error fetching auction with ID ${auctionId}:`, error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+  const getAuctionByItemId = useCallback(async (itemId) => {
+    setIsLoading(true);
+    try {
+      const response = await auctionServiceApi.get(`/items/${itemId}`);
+      setCurrentAuction(response.data);
+    } catch (error) {
+      console.error(`Error fetching auction with ID ${itemId}:`, error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   const connectWebSocket = useCallback((auctionId) => {
-    const url = `ws:${BASE_URL}/auctions/${auctionId}/update`;
+    const url = `ws:${BASE_URL}/${auctionId}/update`; // Replace BASE_URL with actual base URL
     const socket = new WebSocket(url);
-
-    socket.onopen = () => console.log('WebSocket connection established');
-    socket.onmessage = (event) => {
-      try {
-        const updatedAuction = JSON.parse(event.data);
-        setCurrentAuction(updatedAuction);
-      } catch (error) {
-        console.error('WebSocket error:', error);
-      }
-    };
-
-    socket.onerror = (error) => console.error('WebSocket error:', error);
+    // WebSocket event handlers...
     setWebSocket(socket);
-
     return () => socket.close();
   }, []);
-  // Function to disconnect the WebSocket
+
   const disconnectWebSocket = useCallback(() => {
+    // Function to disconnect the WebSocket
     if (webSocket) {
-      console.log('Closing WebSocket connection');
       webSocket.close();
       setWebSocket(null);
     }
@@ -63,6 +74,9 @@ export const AuctionProvider = ({ children }) => {
         auctions,
         currentAuction,
         isLoading,
+        fetchAuctions,
+        getAuctionById,
+        getAuctionByItemId,
         connectWebSocket,
         disconnectWebSocket,
       }}

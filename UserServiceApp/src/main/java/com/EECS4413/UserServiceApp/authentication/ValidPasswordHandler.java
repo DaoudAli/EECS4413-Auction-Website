@@ -13,14 +13,22 @@ public class ValidPasswordHandler extends Handler {
 
     @Override
     public boolean handle(String userName, String passWord) {
-
-        User user = userRepository.findByPassWord(userName);
-
+        boolean result = false;
+        User user = userRepository.findByUserNameAndPassWord(userName, passWord);
+        System.out.println("user from valid password " + user);
         if (user == null) {
-            return false;
+            result = false;
+            System.out.println("Result: " + result);
+
+            return result;
+
+        } else {
+            result = true;
+            System.out.println("Result: " + result);
+            return handleNext(userName, passWord);
+
         }
 
-        return handleNext(userName, passWord);
     }
 
 }

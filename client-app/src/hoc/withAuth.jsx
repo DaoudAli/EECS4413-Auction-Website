@@ -11,17 +11,23 @@ export default function withAuth(WrappedComponent) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-      if (!isAuthenticated) {
-        Router.replace('/signin');
-        toast.error('You need to sign in or sign up before continuing', {
-          position: toast.POSITION.TOP_CENTER,
-          toastId: 'auth-redirect',
-          hideProgressBar: true,
-          autoClose: 2000,
-        });
-      }
-      setIsLoading(false);
-    }, [Router]);
+      // Set a delay before checking authentication status
+      const timer = setTimeout(() => {
+        if (!isAuthenticated) {
+          Router.replace('/signin');
+          toast.error('You need to sign in or sign up before continuing', {
+            position: toast.POSITION.TOP_CENTER,
+            toastId: 'auth-redirect',
+            hideProgressBar: true,
+            autoClose: 2000,
+          });
+        }
+        setIsLoading(false);
+      }, 1000); // Delay of 1 second
+
+      // Cleanup the timer when the component is unmounted or re-rendered
+      return () => clearTimeout(timer);
+    }, [Router, isAuthenticated]);
 
     if (isLoading) {
       return <Spinner />;
