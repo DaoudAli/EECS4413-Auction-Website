@@ -13,14 +13,23 @@ public class UserExistsHandler extends Handler {
 
     @Override
     public boolean handle(String userName, String passWord) {
+        boolean result = false;
 
         User user = userRepository.findByUserName(userName);
-
+        System.out.println("user from user exists: " + user);
         if (user == null) {
-            return false;
+            result = false;
+            System.out.println("Result: " + result);
+
+            return result;
+
+        } else {
+            result = true;
+            System.out.println("Result: " + result);
+            return handleNext(userName, passWord);
+
         }
 
-        return handleNext(userName, passWord);
     }
 
 }

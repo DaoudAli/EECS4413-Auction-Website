@@ -97,7 +97,6 @@ public class UserController {
 		String token = userServices.authenticate(credentials.getUserName(), credentials.getPassWord());
 
 		if (token != null) {
-			System.out.println("Token not null in /sign-in: " + token);
 			HttpHeaders headers = new HttpHeaders();
 
 			// Create a cookie
@@ -110,8 +109,6 @@ public class UserController {
 			// Add cookie to the headers
 			headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
 			User user = userServices.getUserFromToken(token);
-
-			System.out.println("Headers in /sign-in: " + headers.toString());
 
 			// Return response entity with headers
 			return ResponseEntity.ok().headers(headers).body(user);
@@ -131,7 +128,6 @@ public class UserController {
 
 		User user = userServices.getUserFromToken(token);
 		if (user != null) {
-			System.out.println("User: " + user);
 			return ResponseEntity.ok(user);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized - Invalid Token");
