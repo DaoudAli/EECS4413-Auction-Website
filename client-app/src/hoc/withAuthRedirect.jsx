@@ -10,23 +10,29 @@ export default function withAuthRedirect(WrappedComponent) {
     const { currentUser } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
     let isAuthenticated;
+
     useEffect(() => {
-      try {
-        isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-      } catch (error) {
-        console.error('Failed to access localStorage:', error);
-      }
-      if (isAuthenticated) {
-        toast.error('You are already signed in', {
-          position: toast.POSITION.TOP_CENTER,
-          toastId: 'auth-already-signed-in',
-          hideProgressBar: true,
-          autoClose: 300,
-        });
-        Router.replace('/');
-      }
-      setIsLoading(false);
-    }, []);
+      const timer = setTimeout(() => {
+        try {
+          isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+        } catch (error) {
+          console.error('Failed to access localStorage:', error);
+        }
+        if (isAuthenticated) {
+          toast.error('You are already signed in', {
+            position: toast.POSITION.TOP_CENTER,
+            toastId: 'auth-already-signed-in',
+            hideProgressBar: true,
+            autoClose: 300,
+          });
+          Router.replace('/');
+        }
+        setIsLoading(false);
+      }, 1000); // Delay of 1 second
+
+      // Cleanup the timer when the component is unmounted or re-rendered
+      return () => clearTimeout(timer);
+    }, [Router, isAuthenticated]);
 
     return isLoading ? <Spinner /> : <WrappedComponent {...props} />;
   };
