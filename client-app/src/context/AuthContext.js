@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import Cookies from 'js-cookie';
 import { userServiceApi } from '@/api/spring-services-api';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 const AuthContext = createContext({});
@@ -50,10 +50,23 @@ export const AuthProvider = ({ children }) => {
       // You might want to fetch the user's information here if needed
       setCurrentUser(data);
       const token = Cookies.get('auth-token');
+      console.log(token);
       setIsAuthenticated(true);
+      toast.success('Successfully logged in!', {
+        position: toast.POSITION.TOP_CENTER,
+        toastId: 'login-success',
+        hideProgressBar: true,
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error(error);
       // Handle any login errors here
+      toast.error('Incorrect Username or Password', {
+        position: toast.POSITION.TOP_CENTER,
+        toastId: 'login-failed',
+        hideProgressBar: true,
+        autoClose: 2000,
+      });
       setCurrentUser(null);
       setIsAuthenticated(false);
     } finally {
@@ -68,9 +81,21 @@ export const AuthProvider = ({ children }) => {
       // Adjust the endpoint as per your API
       const response = await userServiceApi.post('/new', userData);
       Cookies.set('token', response.data);
+      toast.success('Successfully Signed up!', {
+        position: toast.POSITION.TOP_CENTER,
+        toastId: 'login-success',
+        hideProgressBar: true,
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error(error);
       setCurrentUser(null);
+      toast.error('Error signing you up', {
+        position: toast.POSITION.TOP_CENTER,
+        toastId: 'signup-failed',
+        hideProgressBar: true,
+        autoClose: 2000,
+      });
       setIsAuthenticated(false);
     }
     setIsLoading(false);
