@@ -37,6 +37,23 @@ export const CatalogueProvider = ({ children }) => {
       // Handle error appropriately
     }
   };
+  const getItemsBySellerId = async (sellerId) => {
+    console.log('response seller: ', sellerId);
+
+    setIsLoading(true);
+    try {
+      const response = await catalogueServiceApi.get(
+        `/items/seller/${sellerId}`
+      );
+      console.log('response: ', response);
+      setIsLoading(false);
+      return response.data; // Return the items
+    } catch (error) {
+      console.error(`Error fetching items for seller ${sellerId}:`, error);
+      setIsLoading(false);
+      // Handle error appropriately
+    }
+  };
 
   const getItemById = async (itemId) => {
     // First, try to find the item in the local state
@@ -45,14 +62,23 @@ export const CatalogueProvider = ({ children }) => {
       return localItem;
     }
 
+    // Try to get the item from local storage
+    const storedItem = localStorage.getItem(`item_${itemId}`);
+    if (storedItem) {
+      const parsedItem = JSON.parse(storedItem);
+      setItems((prevItems) => [...prevItems, parsedItem]); // Update the local state
+      return parsedItem;
+    }
+
     // If not found, make an API call
     setIsLoading(true);
     try {
       const response = await catalogueServiceApi.get(`/items/${itemId}`);
-      console.log('response from getn item', response);
-      items.push(response.data);
+      const fetchedItem = response.data;
+      setItems((prevItems) => [...prevItems, fetchedItem]); // Update the local state
+      localStorage.setItem(`item_${itemId}`, JSON.stringify(fetchedItem)); // Store in local storage
       setIsLoading(false);
-      return response.data;
+      return fetchedItem;
     } catch (error) {
       console.error(error);
       setIsLoading(false);
@@ -86,6 +112,7 @@ export const CatalogueProvider = ({ children }) => {
         getAllItems,
         searchItems,
         getItemById,
+        getItemsBySellerId,
         addItem,
         searchResults,
         isLoading,

@@ -8,6 +8,7 @@ import com.EECS4413.AuctionServiceApp.dto.ItemDTO;
 import com.EECS4413.AuctionServiceApp.model.*;
 import com.EECS4413.AuctionServiceApp.model.Auction.AuctionStatus;
 import com.EECS4413.AuctionServiceApp.services.CatalogueServiceClient;
+import com.EECS4413.AuctionServiceApp.websocket.AuctionWSHandler;
 
 import feign.FeignException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,14 +31,13 @@ import org.springframework.http.ResponseEntity;
 public class AuctionController {
     private final BidRepository bidRepository;
     private final AuctionRepository auctionRepository;
-    private final CatalogueServiceClient catalogueServiceClient;
+    private AuctionWSHandler auctionWSHandler;
 
     public AuctionController(BidRepository bidRepository, AuctionRepository auctionRepository,
-            CatalogueServiceClient catalogueServiceClient) {
+            AuctionWSHandler auctionWSHandler) {
         this.bidRepository = bidRepository;
         this.auctionRepository = auctionRepository;
-        this.catalogueServiceClient = catalogueServiceClient;
-
+        this.auctionWSHandler = auctionWSHandler;
     }
 
     @Operation(summary = "Get service health", description = "Check if service is up")
@@ -121,7 +121,7 @@ public class AuctionController {
         return new ResponseEntity<>(bids, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get all bids for an user", description = "Retrieve a list of all bids for a specific user with bidderId")
+    @Operation(summary = "Get all bids for a user", description = "Retrieve a list of all bids for a specific user with bidderId")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved all bids for the item", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)))
     @GetMapping("/{bidderId}/user-bids")
     public ResponseEntity<List<Bid>> getAllBidsForUser(@PathVariable Long bidderId) {
@@ -135,73 +135,62 @@ public class AuctionController {
     @ApiResponse(responseCode = "404", description = "Item not found")
     @ApiResponse(responseCode = "400", description = "Invalid bid submission")
     @PostMapping("/{auctionId}/bids")
-    public ResponseEntity<?> placeForwardAuctionBid(@PathVariable Long itemId, @RequestBody Bid bid) {
+    public ResponseEntity<?> placeForwardAuctionBid(@PathVariable Long auctionId, @RequestBody Bid bid) {
         try {
             // Check if the item exists using the CatalogueServiceClient
-            ItemDTO itemDTO = catalogueServiceClient.getItemById(itemId);
+            // ItemDTO itemDTO = catalogueServiceClient.getItemById(itemId);
 
             // Check if the auction exists for this item
-            Optional<Auction> auctionOptional = auctionRepository.findByItemId(itemId);
+            Optional<Auction> auctionOptional = auctionRepository.findById(auctionId);
             Auction auction;
 
             if (auctionOptional.isPresent()) {
                 // Use the existing auction
                 auction = auctionOptional.get();
-            } else {
-                // Create a new auction as it does not exist
-                auction = new Auction();
-                auction.setItemId(itemId);
-                auction.addItemDetails(itemDTO);
-                auction.calculateStatus(); // Implement this method in Auction
+                // } else {
+                // // Create a new auction as it does not exist
+                // auction = new Auction();
+                // auction.setItemId(itemId);
+                // auction.addItemDetails(itemDTO);
+                // auction.calculateStatus(); // Implement this method in Auction
+                // auctionRepository.save(auction);
+                // }
+
+                // Check if the auction type is FORWARD
+                if (auction.getType() != Auction.AuctionType.FORWARD
+                        || auction.getStatus() != Auction.AuctionStatus.ACTIVE) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body("Item not available for bidding.");
+                }
+                // Get the highest bid for this auction
+                Bid highestBid = getHighestBidForAuction(auction.getId());
+
+                // Check if the new bid is higher than the highest bid
+                if (highestBid != null && bid.getAmount() <= highestBid.getAmount()) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body("Bid must be higher than the current highest bid.");
+                }
+
+                // Save the new bid
+                bid.setAuctionId(auction.getId());
+                Bid savedBid = bidRepository.save(bid);
+
+                // Update auction status if necessary
+                auction.calculateStatus();
+                auction.setCurrentBidPrice(savedBid.getAmount());
                 auctionRepository.save(auction);
+                try {
+                    this.auctionWSHandler.broadcast(String.valueOf(auction.getId()), auction);
+                } catch (Exception e) {
+                    System.out.println("Unable to Send Updates");
+                }
+
+                return ResponseEntity.status(HttpStatus.CREATED).body(savedBid);
+            } else {
+                return new ResponseEntity<>("Auction not found", HttpStatus.NOT_FOUND);
             }
-            // Check if the auction type is FORWARD
-            if (auction.getType() != Auction.AuctionType.FORWARD
-                    || auction.getStatus() != Auction.AuctionStatus.ACTIVE) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Item not available for bidding.");
-            }
-            // Get the highest bid for this auction
-            Bid highestBid = getHighestBidForAuction(auction.getId());
-
-            // Check if the new bid is higher than the highest bid
-            if (highestBid != null && bid.getAmount() <= highestBid.getAmount()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Bid must be higher than the current highest bid.");
-            }
-
-            // Save the new bid
-            bid.setAuctionId(auction.getId());
-            Bid savedBid = bidRepository.save(bid);
-
-            // Update auction status if necessary
-            auction.calculateStatus();
-            auctionRepository.save(auction);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedBid);
         } catch (FeignException.NotFound e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item not found.");
-        }
-    }
-
-    @Operation(summary = "Get highest bid for an item", description = "Retrieve the highest bid for a specific item")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved highest bid", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)) })
-    @ApiResponse(responseCode = "404", description = "Item not found or no bids available")
-    @GetMapping("/{auctionId}/bids/highest")
-    public ResponseEntity<Bid> getHighestBidForItem(@PathVariable Long auctionId) {
-        Optional<Auction> auction = auctionRepository.findById(auctionId);
-        if (auction.isPresent()) {
-            Bid highestBid = bidRepository.findByAuctionId(auction.get().getId()).stream()
-                    .max(Comparator.comparing(Bid::getAmount))
-                    .orElse(null);
-            if (highestBid != null) {
-                return new ResponseEntity<>(highestBid, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -211,7 +200,7 @@ public class AuctionController {
     @PostMapping("/{auctionId}/buy-now")
     public ResponseEntity<?> placeDutchAuctionBid(@PathVariable Long auctionId, @RequestBody Bid bid) {
 
-        Optional<Auction> optionalAuction = auctionRepository.findByItemId(auctionId);
+        Optional<Auction> optionalAuction = auctionRepository.findById(auctionId);
 
         if (!optionalAuction.isPresent()) {
             return new ResponseEntity<>("Auction not found.", HttpStatus.NOT_FOUND);
@@ -237,12 +226,37 @@ public class AuctionController {
         // Process the bid and auction update
         bid.setAuctionId(auction.getId());
         Bid savedBid = bidRepository.save(bid);
-
+        auction.setCurrentBidPrice(bid.getAmount());
         auction.setStatus(Auction.AuctionStatus.SOLD); // Update auction status
         auctionRepository.save(auction);
-
+        try {
+            this.auctionWSHandler.broadcast(String.valueOf(auction.getId()), auction);
+        } catch (Exception e) {
+            System.out.println("Unable to Send Updates");
+        }
         return new ResponseEntity<>(savedBid, HttpStatus.CREATED);
 
+    }
+
+    @Operation(summary = "Get highest bid for an item", description = "Retrieve the highest bid for a specific item")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved highest bid", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Bid.class)) })
+    @ApiResponse(responseCode = "404", description = "Item not found or no bids available")
+    @GetMapping("/{auctionId}/bids/highest")
+    public ResponseEntity<Bid> getHighestBidForItem(@PathVariable Long auctionId) {
+        Optional<Auction> auction = auctionRepository.findById(auctionId);
+        if (auction.isPresent()) {
+            Bid highestBid = bidRepository.findByAuctionId(auction.get().getId()).stream()
+                    .max(Comparator.comparing(Bid::getAmount))
+                    .orElse(null);
+            if (highestBid != null) {
+                return new ResponseEntity<>(highestBid, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Operation(summary = "Check auction status", description = "Get the status of an auction, including whether it has ended and details of the winning bidder")
@@ -317,7 +331,13 @@ public class AuctionController {
         // automatic auctionId
         // Set default values for any missing fields
         newAuction.setDefaultValues();
+
         auctionRepository.save(newAuction);
+        try {
+            this.auctionWSHandler.broadcast(String.valueOf(newAuction.getId()), newAuction);
+        } catch (Exception e) {
+            System.out.println("Unable to Send Updates");
+        }
         return new ResponseEntity<>("Auction is now created", HttpStatus.OK);
     }
 
@@ -336,8 +356,22 @@ public class AuctionController {
         auction.setStatus(updatedAuctionDetails.getStatus());
 
         auctionRepository.save(auction);
-
+        try {
+            this.auctionWSHandler.broadcast(String.valueOf(auction.getId()), auction);
+        } catch (Exception e) {
+            System.out.println("Unable to Send Updates");
+        }
         return new ResponseEntity<>("Auction updated successfully", HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get auctions by status", description = "Retrieve a list of auctions filtered by their status")
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<Auction>> getAuctionsByStatus(@PathVariable Auction.AuctionStatus status) {
+        List<Auction> auctions = auctionRepository.findByStatus(status);
+        if (auctions.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(auctions, HttpStatus.OK);
     }
 
 }

@@ -100,6 +100,17 @@ public class UserServices {
 	}
 
 	/**
+	 * Read specific user
+	 * 
+	 * @param userName username of user
+	 * @return user object
+	 */
+
+	public Optional<User> readUserById(Long userId) {
+		return userRepository.findById(userId);
+	}
+
+	/**
 	 * Reads all sellers
 	 * 
 	 * @param no params

@@ -111,12 +111,6 @@ public class CatalogueController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
     }
 
-    private String uploadFileToS3(MultipartFile file) {
-        // Logic to upload file to S3 and return the file URL
-        // Return the URL of the uploaded file
-        return "";
-    }
-
     // Update an existing item
     @Operation(summary = "Update an existing item", description = "Update details of an existing item in the catalogue")
     @ApiResponse(responseCode = "200", description = "Item updated successfully", content = {

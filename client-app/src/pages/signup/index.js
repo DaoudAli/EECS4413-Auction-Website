@@ -107,24 +107,6 @@ function SignupPage() {
                     sx={textFieldStyle}
                   />
                 </div>
-
-                <div className="w-full md:w-1/2 px-3 mb-6">
-                  <TextField
-                    id="userName"
-                    name="userName"
-                    required
-                    fullWidth
-                    label="User Name"
-                    value={values.userName}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={touched.userName && Boolean(errors.userName)}
-                    helperText={touched.userName && errors.userName}
-                    sx={textFieldStyle}
-                  />
-                </div>
-              </div>
-              <div className="md:flex">
                 <div className="w-full md:w-1/2 px-3 mb-6">
                   <TextField
                     id="lastName"
@@ -140,6 +122,24 @@ function SignupPage() {
                     sx={textFieldStyle}
                   />
                 </div>
+              </div>
+              <div className="md:flex">
+                <div className="w-full md:w-1/2 px-3 mb-6">
+                  <TextField
+                    id="userName"
+                    name="userName"
+                    required
+                    fullWidth
+                    label="User Name"
+                    value={values.userName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.userName && Boolean(errors.userName)}
+                    helperText={touched.userName && errors.userName}
+                    sx={textFieldStyle}
+                  />
+                </div>
+
                 <div className="w-full md:w-1/2 px-3 mb-6">
                   <TextField
                     id="passWord"

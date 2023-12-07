@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 export default function Home() {
   return (
-    <div className="relative isolate overflow-hidden bg-gray-900">
+    <div className="relative isolate overflow-hidden">
       <div
         className="absolute left-[calc(50%-4rem)] top-10 -z-10 transform-gpu blur-3xl sm:left-[calc(50%-18rem)] lg:left-48 lg:top-[calc(50%-30rem)] xl:left-[calc(50%-24rem)]"
         aria-hidden="true"
