@@ -5,6 +5,7 @@ import { catalogueServiceApi } from '@/api/spring-services-api';
 import { useDropzone } from 'react-dropzone';
 import { Link } from 'lucide-react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 export default function AuctionItemForm() {
   // Router for Pages
   const router = useRouter();
@@ -148,10 +149,12 @@ export default function AuctionItemForm() {
           </div>
           <div>
             {itemImages.map((file) => (
-              <img
+              <Image
                 key={file.name}
                 src={file.preview}
                 alt={file.name}
+                width={500}
+                height={500}
                 className="h-20 w-20 object-cover"
               />
             ))}
