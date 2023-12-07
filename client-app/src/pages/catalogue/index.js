@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCatalogue } from '@/context/CatalogueContext';
 import { useRouter } from 'next/navigation';
 import SearchResults from '@/components/SearchResults';
@@ -6,15 +6,44 @@ import Image from 'next/image';
 import { useAuction } from '@/context/AuctionContext';
 
 export default function ItemSearch() {
-  const { searchItems } = useCatalogue();
+  const { searchItems, getAllItems } = useCatalogue();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searchDone, setSearchDone] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { getAuctionByItemId } = useAuction(); // Replace with actual function from AuctionContext
-
   const router = useRouter();
+  // Load all items when the component mounts
+  useEffect(() => {
+    async function loadAllItems() {
+      setIsLoading(true);
+      try {
+        const allItems = await getAllItems();
+        // Filter active items if needed
 
+        const itemsWithActiveAuctions = await Promise.all(
+          allItems.map(async (item) => {
+            const auction = await getAuctionByItemId(item.id);
+            if (auction && auction.status === 'ACTIVE') {
+              return { ...item, auction }; // Combine item details with active auction details
+            }
+            return null;
+          })
+        );
+        const activeItems = itemsWithActiveAuctions.filter(
+          (item) => item !== null
+        );
+
+        setSearchResults(activeItems);
+      } catch (error) {
+        console.error('Error loading items:', error);
+        setSearchResults([]);
+      }
+      setIsLoading(false);
+    }
+
+    loadAllItems();
+  }, []);
   const handleSearch = async (event) => {
     event.preventDefault();
     setIsLoading(true);
@@ -37,7 +66,6 @@ export default function ItemSearch() {
         const activeItems = itemsWithActiveAuctions.filter(
           (item) => item !== null
         );
-        console.log('Active items with auctions: ', activeItems);
         setSearchResults(activeItems);
       } else {
         setSearchResults([]);
@@ -55,8 +83,8 @@ export default function ItemSearch() {
         {/* Content goes here */}
 
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Find an item by searching below
+          <h1 className="text-4xl font-bold text-white mb-8">
+            Explore our Items
           </h1>
           <form
             onSubmit={handleSearch}

@@ -364,4 +364,14 @@ public class AuctionController {
         return new ResponseEntity<>("Auction updated successfully", HttpStatus.OK);
     }
 
+    @Operation(summary = "Get auctions by status", description = "Retrieve a list of auctions filtered by their status")
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<Auction>> getAuctionsByStatus(@PathVariable Auction.AuctionStatus status) {
+        List<Auction> auctions = auctionRepository.findByStatus(status);
+        if (auctions.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(auctions, HttpStatus.OK);
+    }
+
 }

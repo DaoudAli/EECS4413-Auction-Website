@@ -45,7 +45,7 @@ export const AuctionProvider = ({ children }) => {
       setCurrentAuction(response.data);
       return response.data;
     } catch (error) {
-      console.error(`Error fetching auction with ID ${itemId}:`, error);
+      console.error(`Error fetching auction with item ID ${itemId}:`, error);
     } finally {
       setIsLoading(false);
     }
