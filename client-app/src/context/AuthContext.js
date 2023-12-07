@@ -80,13 +80,15 @@ export const AuthProvider = ({ children }) => {
     try {
       // Adjust the endpoint as per your API
       const response = await userServiceApi.post('/new', userData);
-      Cookies.set('token', response.data);
+      Cookies.set('auth-token', response.data);
+
       toast.success('Successfully Signed up!', {
         position: toast.POSITION.TOP_CENTER,
         toastId: 'login-success',
         hideProgressBar: true,
         autoClose: 2000,
       });
+      Router.push('/profile');
     } catch (error) {
       console.error(error);
       setCurrentUser(null);
@@ -108,6 +110,18 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('isAuthenticated', 'false');
     Router.replace('/');
   };
+  const getUserById = useCallback(async (userId) => {
+    setIsLoading(true);
+    try {
+      const response = await userServiceApi.get(`/id/${userId}`);
+      setIsLoading(false);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      setIsLoading(false);
+      return null; // or an appropriate error handling
+    }
+  }, []);
 
   useEffect(() => {
     // Only call authenticate if it hasn't been done yet
@@ -128,6 +142,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         isLoading,
         login,
+        getUserById,
         logout,
         register,
       }}
