@@ -1,6 +1,7 @@
 package com.EECS4413.UserServiceApp.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,13 +48,23 @@ public class UserController {
 	}
 
 	@Operation(summary = "Get Specific User", description = "Retrieves a specific user by username.")
-	@GetMapping("/{userName}")
+	@GetMapping("/username/{userName}")
 	public ResponseEntity<?> getSpecificUser(
 			@Parameter(description = "Username of the user") @PathVariable String userName) {
 		User user = userServices.readUser(userName);
 		if (user == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
 		return ResponseEntity.status(HttpStatus.OK).body(user);
+	}
+
+	@Operation(summary = "Get Specific User", description = "Retrieves a specific user by id.")
+	@GetMapping("/id/{userId}")
+	public ResponseEntity<?> getSpecificUserById(
+			@Parameter(description = "Username of the user") @PathVariable Long userId) {
+		Optional<User> user = userServices.readUserById(userId);
+		if (!user.isPresent())
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+		return ResponseEntity.status(HttpStatus.OK).body(user.get());
 	}
 
 	@Operation(summary = "Get All Sellers", description = "Retrieves a list of all sellers.")
