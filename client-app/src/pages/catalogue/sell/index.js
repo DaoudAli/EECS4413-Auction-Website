@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { auctionServiceApi } from '@/api/spring-services-api';
 import { Link } from 'lucide-react';
 import { useRouter } from 'next/router';
+import { useAuth } from '@/context/AuthContext';
+import { useCatalogue } from '@/context/CatalogueContext';
 export default function AuctionItemForm() {
   // Router for Pages
   const router = useRouter();
-
+  const { currentUser } = useAuth();
+  const { getItemsBySellerId } = useCatalogue();
   // State hooks for form inputs
   const [selectedItemId, setSelectedItemId] = useState('');
   const [auctionType, setAuctionType] = useState('forward');
@@ -51,12 +54,21 @@ export default function AuctionItemForm() {
   };
 
   useEffect(() => {
-    // Load item data from localStorage
-    const loadedData = JSON.parse(localStorage.getItem('userItemsData'));
-    if (loadedData) {
-      setUserItemsData(loadedData);
+    if (currentUser && currentUser.id) {
+      const fetchUserItemsAndAuctions = async () => {
+        try {
+          console.log('currentUser', currentUser);
+          const items = await getItemsBySellerId(currentUser.id);
+          console.log('Items', items);
+          setUserItemsData(items);
+          // Load item data from localStorage
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      };
+      fetchUserItemsAndAuctions();
     }
-  }, []);
+  }, [currentUser]);
 
   // Handle form submission
   const handleSubmit = async (event) => {
@@ -68,6 +80,7 @@ export default function AuctionItemForm() {
     // Prepare data for API request
     const formData = {
       itemId: selectedItemId,
+      sellerId: currentUser.id,
       type: auctionType?.toUpperCase(),
       startDate: convertDateToISO(auctionStartDate),
       endDate: convertDateToISO(auctionEndDate),
@@ -78,8 +91,12 @@ export default function AuctionItemForm() {
     // API request logic here
     try {
       // Example: await api.post('/api/auction', formData);
-      await auctionServiceApi.post(`/${selectedItemId}/new-auction`, formData);
+      const response = await auctionServiceApi.post(
+        `/${selectedItemId}/new-auction`,
+        formData
+      );
       console.log('Form Submitted', formData);
+      router.push(`/catalogue/${response.data.id}`);
       // Handle successful submission (e.g., show success message or redirect)
     } catch (error) {
       // Handle API request errors

@@ -2,7 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import withAuth from '@/hoc/withAuth';
-import { Gavel, Tag, PlusSquare, Building, CheckCircle } from 'lucide-react';
+import {
+  Gavel,
+  Tag,
+  PlusSquare,
+  Building,
+  CheckCircle,
+  CircleDollarSign,
+} from 'lucide-react';
 import { useState, useEffect } from 'react';
 import {
   catalogueServiceApi,
@@ -38,7 +45,7 @@ function Profile() {
         }
         // Get Auction Items for User
         userAuctionsRes = await auctionServiceApi.get();
-        0;
+
         let userAuctions = [];
         for (let auction of userAuctionsRes.data) {
           for (let item of userItemsRes.data) {
@@ -85,13 +92,19 @@ function Profile() {
       name: 'Your Bids',
       href: '/bids',
       icon: Gavel,
-      amount: `You currently have ${userBidData.length} active bids...`,
+      amount: `You have placed ${userBidData.length} bids...`,
     },
     {
-      name: 'Your Items & Auctions',
-      href: '/catalogue/results',
+      name: 'Your Items',
+      href: '/catalogue/user',
       icon: Tag,
-      amount: `You currently have ${userItemsCount} items and ${userAuctionsData.length} auctions listed...`,
+      amount: `You currently have ${userItemsCount} items `,
+    },
+    {
+      name: 'Your Auctions',
+      href: '/auctions/user',
+      icon: CircleDollarSign,
+      amount: `You are involved in ${userAuctionsData.length} auctions...`,
     },
   ];
 
