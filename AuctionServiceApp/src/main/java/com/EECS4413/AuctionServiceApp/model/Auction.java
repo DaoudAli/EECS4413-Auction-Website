@@ -10,7 +10,7 @@ import java.time.ZoneId;
 @Entity
 public class Auction {
     public enum AuctionStatus {
-        ACTIVE, ENDED, SOLD, EXPIRED
+        ACTIVE, ENDED, AWAITING_PAYMENT, SOLD, EXPIRED
     }
 
     public enum AuctionType {
@@ -35,11 +35,14 @@ public class Auction {
     @Column(nullable = false)
     private LocalDateTime endTime;
 
+    @Column(name = "seller_id", nullable = false)
+    private Long sellerId;
+
     @Column(name = "start_bid_price", nullable = false, scale = 2)
-    private BigDecimal startBidPrice;
+    private Double startBidPrice;
 
     @Column(name = "current_bid_price", scale = 2)
-    private BigDecimal currentBidPrice;
+    private Double currentBidPrice;
 
     public void addItemDetails(ItemDTO item) {
         this.itemId = item.getId();
@@ -65,10 +68,10 @@ public class Auction {
             this.endTime = LocalDateTime.now(ZoneId.systemDefault()).plusDays(1); // Default end time
         }
         if (this.startBidPrice == null) {
-            this.startBidPrice = BigDecimal.ZERO; // Default starting bid
+            this.startBidPrice = 0.0; // Default starting bid
         }
         if (this.currentBidPrice == null) {
-            this.currentBidPrice = BigDecimal.ZERO; // Default current bid
+            this.currentBidPrice = this.startBidPrice; // Default current bid
         }
         // Other default initializations if necessary
     }
@@ -159,20 +162,27 @@ public class Auction {
         }
     }
 
-    public BigDecimal getStartBidPrice() {
+    public Double getStartBidPrice() {
         return startBidPrice;
     }
 
-    public void setStartBidPrice(BigDecimal startBidPrice) {
+    public void setStartBidPrice(Double startBidPrice) {
         this.startBidPrice = startBidPrice;
     }
 
-    public BigDecimal getCurrentBidPrice() {
+    public Double getCurrentBidPrice() {
         return currentBidPrice;
     }
 
-    public void setCurrentBidPrice(BigDecimal currentBidPrice) {
+    public void setCurrentBidPrice(Double currentBidPrice) {
         this.currentBidPrice = currentBidPrice;
     }
 
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
+    }
 }

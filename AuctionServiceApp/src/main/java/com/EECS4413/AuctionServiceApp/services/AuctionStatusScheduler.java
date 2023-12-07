@@ -43,7 +43,7 @@ public class AuctionStatusScheduler {
                     if (bidRepository.findByAuctionId(auction.getId()).isEmpty()) {
                         auction.setStatus(Auction.AuctionStatus.EXPIRED);
                     } else {
-                        auction.setStatus(Auction.AuctionStatus.ENDED);
+                        auction.setStatus(Auction.AuctionStatus.AWAITING_PAYMENT);
                     }
                     auctionRepository.save(auction);
                 }
