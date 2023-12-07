@@ -14,7 +14,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Apply CORS to all endpoints
-                        .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins("http://localhost:3000", "https://eecs-4413-auction-website.vercel.app")
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // HTTP methods allowed
                         .allowedHeaders("*") // All headers allowed
                         .allowCredentials(true);
