@@ -17,12 +17,13 @@ export default function Home() {
         />
       </div>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-24 sm:py-32 lg:flex lg:items-center lg:px-8 lg:py-40 w-full">
-        <div className="mx-auto flex-none lg:pt-8 w-1/2">
-          <h1 className="mt-6 text-5xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
+        {/* Text Content */}
+        <div className="mx-auto w-full sm:w-1/2 text-center lg:text-left">
+          <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
             Find Your Treasure at Auction
             <span className="text-pink-600">Zone</span>
           </h1>
-          <p className="mt-4 text-sm sm:text-lg leading-8 text-gray-300">
+          <p className="mt-4 text-base sm:text-lg leading-6 text-gray-300">
             Discover a world of unique and sought-after items. From vintage
             collectibles to modern gadgets, bid or buy instantly and join our
             community of enthusiasts.
@@ -39,6 +40,8 @@ export default function Home() {
             </Link>
           </div>
         </div>
+
+        {/* Image (Hidden on Mobile) */}
         <div className="hidden sm:block mx-auto mt-8 flex max-w-xs sm:mt-12 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none">
           <Image
             src="/auction-hero-3-bg.png"
@@ -46,6 +49,16 @@ export default function Home() {
             width={700}
             height={700}
             className="w-full sm:w-4/5"
+          />
+        </div>
+
+        {/* Image (Visible on Mobile) */}
+        <div className="block sm:hidden mx-auto mt-8">
+          <Image
+            src="/auction-hero-3-bg.png"
+            alt="App screenshot"
+            width={300}
+            height={400}
           />
         </div>
       </div>
