@@ -1,6 +1,18 @@
-import React from 'react';
-import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
 export default function Receipt() {
+  const [userItems, setuserItems] = useState([]);
+  useEffect(() => {
+    let userItems = localStorage.getItem("userCartItems");
+    if (!userItems) {
+      userItems = {
+        itemName: "Car",
+        itemPrice: "$22.44",
+        quantity: "1",
+      };
+    }
+    setuserItems(userItems);
+  }, []);
   return (
     <div className="min-h-screen flex flex-col items-center justify-center space-y-8">
       <div className="flex flex-col md:flex-row gap-6 md:gap-12 items-start max-w-6xl px-4 mx-auto py-6 bg-gray-900">
@@ -25,22 +37,16 @@ export default function Receipt() {
           <div className="mt-8">
             <ul className="space-y-4 text-sm text-gray-300">
               <li>
-                <strong className="text-white">Name:</strong> John Doe
+                <strong className="text-white"> Item Name: </strong>
+                {userItems.itemName}
               </li>
               <li>
-                <strong className="text-white">Address:</strong> 123 Main Street
+                <strong className="text-white">Price:</strong>{" "}
+                {userItems.itemPrice}
               </li>
               <li>
-                <strong className="text-white">Province:</strong> California
-              </li>
-              <li>
-                <strong className="text-white">Country:</strong> USA
-              </li>
-              <li>
-                <strong className="text-white">Postal Code:</strong> 90210
-              </li>
-              <li>
-                <strong className="text-white">Total Amount Paid:</strong> $350
+                <strong className="text-white">Quantity:</strong>{" "}
+                {userItems.quantity}
               </li>
               <li>
                 <strong className="text-white">Item ID:</strong> 123456
@@ -55,7 +61,7 @@ export default function Receipt() {
             </strong>
           </div>
           <div className="mt-8">
-            <Link href="/" className="btn btn-primary" size="lg">
+            <Link href="/profile" className="btn btn-primary" size="lg">
               Back to Main Page
             </Link>
           </div>
