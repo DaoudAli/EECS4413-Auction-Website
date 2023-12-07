@@ -6,7 +6,9 @@ import { useDropzone } from 'react-dropzone';
 import { Link } from 'lucide-react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-export default function AuctionItemForm() {
+import withAuth from '@/hoc/withAuth';
+
+function AuctionItemForm() {
   // Router for Pages
   const router = useRouter();
   const { addItem } = useCatalogue(); // Get addItem function from context
@@ -167,3 +169,4 @@ export default function AuctionItemForm() {
     </div>
   );
 }
+export default withAuth(AuctionItemForm);
