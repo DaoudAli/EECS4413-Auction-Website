@@ -3,7 +3,7 @@
 This repository contains the backend services for an e-commerce auction platform implemented using a microservice architecture with Spring Boot, and a frontend application built using Next.js and Bun. This project is developed for the EECS4413 Class at York University.
 
 # Live Deployment
-You can access the application at eecs-4413-auction-website.vercel.app
+You can access the application at https://eecs-4413-auction-website.vercel.app
 
 ## Services
 
