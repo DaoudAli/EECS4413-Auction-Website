@@ -81,11 +81,11 @@ public class FileService {
             final PutObjectRequest putObjectRequest = new PutObjectRequest(s3BucketName, fileName, file);
             amazonS3.putObject(putObjectRequest);
             Files.delete(file.toPath()); // Remove the local file
-            Date expiration = new Date(System.currentTimeMillis() + 3600 * 10000000); // Set the expiration time (e.g.,
-                                                                                      // 1
-                                                                                      // hour)
 
-            // Generate the pre-signed URL for a GET request
+            // Set the expiration time within the 7-day limit
+            Date expiration = new Date(System.currentTimeMillis() + 3600 * 165000); // 1 hour from now
+
+            // Generate the pre-signed URL
             URL presignedUrl = amazonS3.generatePresignedUrl(s3BucketName, fileName, expiration, HttpMethod.GET);
 
             System.out.println("Pre-Signed URL: " + presignedUrl.toString());
