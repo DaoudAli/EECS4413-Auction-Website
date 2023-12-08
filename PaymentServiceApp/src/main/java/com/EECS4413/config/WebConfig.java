@@ -1,4 +1,4 @@
-package com.EECS4413.AuctionServiceApp.config;
+package com.EECS4413.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
