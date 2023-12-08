@@ -78,10 +78,7 @@ export default function ItemSearch() {
   };
   return (
     <div className="mx-auto h-screen py-20 max-w-7xl px-4 sm:px-6 lg:px-8 ">
-      {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
       <div className="mx-auto max-w-5xl">
-        {/* Content goes here */}
-
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-white mb-8">
             Explore our Items

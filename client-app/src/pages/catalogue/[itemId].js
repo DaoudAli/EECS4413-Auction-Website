@@ -3,11 +3,13 @@ import { useRouter } from 'next/router';
 import { useCatalogue } from '@/context/CatalogueContext';
 import { useAuction } from '@/context/AuctionContext';
 import { useAuth } from '@/context/AuthContext';
+import withAuth from '@/hoc/withAuth';
+
 import AuctionDetails from '@/components/AuctionDetails';
 import Image from 'next/image';
 // Import AuctionContext if available
 
-export default function CatalogueItem() {
+function CatalogueItem() {
   const router = useRouter();
   const { itemId } = router.query;
   const { getItemById } = useCatalogue();
@@ -163,3 +165,4 @@ export default function CatalogueItem() {
     </div>
   );
 }
+export default withAuth(CatalogueItem);

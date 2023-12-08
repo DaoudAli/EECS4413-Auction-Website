@@ -3,8 +3,10 @@ import { auctionServiceApi } from '@/api/spring-services-api';
 import { Link } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
+import withAuth from '@/hoc/withAuth';
+
 import { useCatalogue } from '@/context/CatalogueContext';
-export default function AuctionItemForm() {
+function AuctionItemForm() {
   // Router for Pages
   const router = useRouter();
   const { currentUser } = useAuth();
@@ -233,3 +235,5 @@ export default function AuctionItemForm() {
     </div>
   );
 }
+
+export default withAuth(AuctionItemForm);

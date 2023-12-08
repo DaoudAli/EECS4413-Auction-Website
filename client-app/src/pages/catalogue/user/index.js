@@ -1,7 +1,9 @@
 import React from 'react';
 import SearchResults from '@/components/SearchResults';
 import { useState, useEffect } from 'react';
-export default function UserItems() {
+import withAuth from '@/hoc/withAuth';
+
+function UserItems() {
   const [userItemsData, setUserItemsData] = useState([]);
   const [userAuctionsData, setUserAuctionsData] = useState([]);
   useEffect(() => {
@@ -34,3 +36,5 @@ export default function UserItems() {
     </div>
   );
 }
+
+export default withAuth(UserItems);
