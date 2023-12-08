@@ -48,9 +48,12 @@ export const AuthProvider = ({ children }) => {
       const { data } = await userServiceApi.post('/sign-in', userData);
       // Update the state to reflect that the user is authenticated
       // You might want to fetch the user's information here if needed
+
       setCurrentUser(data);
       const token = Cookies.get('auth-token');
       console.log(token);
+      localStorage.setItem('isAuthenticated', 'true');
+
       setIsAuthenticated(true);
       toast.success('Successfully logged in!', {
         position: toast.POSITION.TOP_CENTER,
@@ -58,7 +61,7 @@ export const AuthProvider = ({ children }) => {
         hideProgressBar: true,
         autoClose: 2000,
       });
-      Router.replace('/profile');
+      Router.push('/profile');
     } catch (error) {
       console.error(error);
       // Handle any login errors here
@@ -105,7 +108,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    Cookies.remove('token');
+    Cookies.remove('auth-token');
     setCurrentUser(null);
     setIsAuthenticated(false);
     localStorage.setItem('isAuthenticated', 'false');
