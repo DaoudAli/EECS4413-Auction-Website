@@ -24,16 +24,13 @@ export default function App() {
         },
       ];
     }
-    fetch(
-      "https://eecs-4413-auction-website.vercel.app/api/checkout_sessions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ items: userCartItems }),
-      }
-    )
+    fetch("/api/checkout_sessions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ items: userCartItems }),
+    })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret))
       .catch((error) => {
