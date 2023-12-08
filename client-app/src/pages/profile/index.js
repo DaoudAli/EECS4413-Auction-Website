@@ -1,7 +1,8 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import withAuth from '@/hoc/withAuth';
+import Image from "next/image";
+import Link from "next/link";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useAuth } from "@/context/AuthContext";
+import withAuth from "@/hoc/withAuth";
 import {
   Gavel,
   Tag,
@@ -9,14 +10,14 @@ import {
   Building,
   CheckCircle,
   CircleDollarSign,
-} from 'lucide-react';
-import { useState, useEffect } from 'react';
+} from "lucide-react";
+import { useState, useEffect } from "react";
 import {
   catalogueServiceApi,
   auctionServiceApi,
-} from '@/api/spring-services-api';
+} from "@/api/spring-services-api";
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 function Profile() {
@@ -24,11 +25,13 @@ function Profile() {
   const [userItemsData, setUserItemsData] = useState([]);
   const [userAuctionsData, setUserAuctionsData] = useState([]);
   const [userBidData, setUserBidData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Get Items listed
   useEffect(() => {
     // Define the function within useEffect
     async function fetchAdditionalUserData() {
+      setIsLoading(true);
       try {
         // Get Items Listed for User
         let userItemsRes = null;
@@ -38,7 +41,7 @@ function Profile() {
             `/items/seller/${currentUser.id}`
           );
           console.log(
-            'User response from catalogue service in profile: ',
+            "User response from catalogue service in profile: ",
             userItemsRes
           );
           setUserItemsData(userItemsRes.data);
@@ -61,9 +64,11 @@ function Profile() {
           `/${currentUser.id}/user-bids`
         );
         setUserBidData(bidRes.data);
-        console.log('Bid response from profile: ', bidRes);
+        console.log("Bid response from profile: ", bidRes);
       } catch (error) {
-        console.error('Failed to fetch additional user data:', error);
+        console.error("Failed to fetch additional user data:", error);
+      } finally {
+        setIsLoading(false); // Stop loading
       }
     }
     fetchAdditionalUserData();
@@ -72,16 +77,16 @@ function Profile() {
   useEffect(() => {
     // Save to localStorage whenever userData is recieved / changes
     if (userItemsData) {
-      localStorage.setItem('userItemsData', JSON.stringify(userItemsData));
+      localStorage.setItem("userItemsData", JSON.stringify(userItemsData));
     }
     if (userAuctionsData) {
       localStorage.setItem(
-        'userAuctionsData',
+        "userAuctionsData",
         JSON.stringify(userAuctionsData)
       );
     }
     if (userBidData) {
-      localStorage.setItem('userBidData', JSON.stringify(userBidData));
+      localStorage.setItem("userBidData", JSON.stringify(userBidData));
     }
   }, [userItemsData, userAuctionsData, userBidData]);
 
@@ -89,27 +94,46 @@ function Profile() {
     userItemsData && userItemsData.length > 0 ? userItemsData.length : 0;
   const cards = [
     {
-      name: 'Your Bids',
-      href: '/bids',
+      name: "Your Bids",
+      href: "/bids",
       icon: Gavel,
       amount: `You have placed ${userBidData.length} bids...`,
     },
     {
-      name: 'Your Items',
-      href: '/catalogue/user',
+      name: "Your Items",
+      href: "/catalogue/user",
       icon: Tag,
       amount: `You currently have ${userItemsCount} items `,
     },
     {
-      name: 'Your Auctions',
-      href: '/auctions/user',
+      name: "Your Auctions",
+      href: "/auctions/user",
       icon: CircleDollarSign,
       amount: `You are involved in ${userAuctionsData.length} auctions...`,
     },
   ];
-
+  // Overlay CSS
+  const overlayStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    zIndex: 1000,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    pointerEvents: "none", // Disable mouse events
+  };
   return (
-    <div className="flex-1 pb-8">
+    <div className="flex-1 pb-8 relative">
+      {/* Show loading overlay if loading */}
+      {isLoading && (
+        <div style={overlayStyle}>
+          <CircularProgress />
+        </div>
+      )}
       {/* Page header */}
       <div className="shadow py-2">
         <div className="px-4 sm:px-6 lg:mx-auto lg:max-w-6xl lg:px-8">
@@ -122,7 +146,7 @@ function Profile() {
                   className="hidden h-16 w-16 rounded-full sm:block bg-gray-100"
                   src={
                     currentUser?.avatar_url ||
-                    'https://www.svgrepo.com/show/496485/profile-circle.svg'
+                    "https://www.svgrepo.com/show/496485/profile-circle.svg"
                   }
                   alt="User Avatar"
                   width={40}
@@ -134,7 +158,7 @@ function Profile() {
                       className="h-16 w-16 rounded-full sm:hidden"
                       src={
                         currentUser?.avatar_url ||
-                        'https://www.svgrepo.com/show/496485/profile-circle.svg'
+                        "https://www.svgrepo.com/show/496485/profile-circle.svg"
                       }
                       alt="User Avatar"
                       width={30}
@@ -151,7 +175,7 @@ function Profile() {
                         className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                         aria-hidden="true"
                       />
-                      {currentUser?.street}, {currentUser?.province},{' '}
+                      {currentUser?.street}, {currentUser?.province},{" "}
                       {currentUser?.country}
                     </dd>
                     <dt className="sr-only">Account status</dt>
