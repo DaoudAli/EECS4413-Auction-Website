@@ -1,30 +1,30 @@
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { useAuth } from '@/context/AuthContext'; // Adjust the import path as needed
-import TextField from '@mui/material/TextField';
-import withAuthRedirect from '@/hoc/withAuthRedirect';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { useAuth } from "@/context/AuthContext"; // Adjust the import path as needed
+import TextField from "@mui/material/TextField";
+import withAuthRedirect from "@/hoc/withAuthRedirect";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 const textFieldStyle = {
-  '& label.Mui-focused': {
-    color: 'white',
+  "& label.Mui-focused": {
+    color: "white",
   },
-  '& label': {
-    color: 'white',
+  "& label": {
+    color: "white",
   },
-  '& .MuiInputBase-input': {
-    color: 'white',
+  "& .MuiInputBase-input": {
+    color: "white",
   },
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: 'white',
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "white",
     },
-    '&:hover fieldset': {
-      borderColor: 'white',
+    "&:hover fieldset": {
+      borderColor: "white",
     },
-    '&.Mui-focused fieldset': {
-      borderColor: 'white',
+    "&.Mui-focused fieldset": {
+      borderColor: "white",
     },
   },
 };
@@ -33,20 +33,20 @@ function SignInPage() {
   const { login } = useAuth();
   const Router = useRouter();
   const initialValues = {
-    userName: '',
-    passWord: '',
+    userName: "",
+    passWord: "",
   };
 
   const validationSchema = Yup.object().shape({
-    userName: Yup.string().required('Username is required'),
-    passWord: Yup.string().required('Password is required'),
+    userName: Yup.string().required("Username is required"),
+    passWord: Yup.string().required("Password is required"),
   });
 
   const onSubmit = async (values, { setSubmitting }) => {
-    console.log('onSubmit values ', values);
+    console.log("onSubmit values ", values);
     try {
       await login(values);
-      Router.replace('profile');
+      Router.replace("profile");
       setSubmitting(false);
       // Handle successful login, e.g., redirect or show a success message
     } catch (error) {
