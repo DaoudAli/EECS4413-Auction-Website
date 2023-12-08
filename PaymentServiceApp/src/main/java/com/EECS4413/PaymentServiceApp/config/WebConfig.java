@@ -1,4 +1,4 @@
-package com.EECS4413.config;
+package com.EECS4413.PaymentServiceApp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
