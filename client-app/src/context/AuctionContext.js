@@ -91,7 +91,7 @@ export const AuctionProvider = ({ children }) => {
 
   const connectWebSocket = useCallback(
     (auctionId) => {
-      const url = `ws:${process.env.NEXT_PUBLIC_WS_URL}/${auctionId}/update`;
+      const url = `wss:${process.env.NEXT_PUBLIC_WS_URL}/${auctionId}/update`;
       console.log('Inside connect websocket', url);
       // Create a new WebSocket connection
       const socket = new WebSocket(url);

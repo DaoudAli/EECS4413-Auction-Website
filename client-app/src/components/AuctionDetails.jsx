@@ -100,15 +100,12 @@ const AuctionDetails = ({ auctionData }) => {
     // Implement the logic to edit the auction here
     // For example, you can reduce the price by a fixed amount
     // and call the editAuction function from your context
-    const newPrice = currentBidPrice - 10; // Reduce the price by $10
-    editAuction(id, newPrice);
   };
 
   // Function to handle ending the auction for Forward and Dutch auctions
   const handleEndAuction = () => {
     // Implement the logic to end the auction here
     // Call the endAuction function from your context
-    endAuction(id);
   };
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
   useEffect(() => {
@@ -258,40 +255,43 @@ const AuctionDetails = ({ auctionData }) => {
         )}
 
       {/* Forward Auction specific details */}
-      {type === 'FORWARD' && status === 'ACTIVE' && !showPayButton && (
-        <>
-          {auctionData.highestBid && (
-            <div className="mt-2 space-y-4">
-              <p className="text-md font-bold text-gray-400 flex space-x-2">
-                Top Bidder
-                <Tag className="mx-2" />
-                <span className="font-semibold text-lg">
-                  {auctionData.highestBid.name}
-                </span>
-              </p>
-              <p className="text-md font-bold text-gray-400 flex space-x-2 items-center">
-                Current bid <CircleDollarSign className="mx-2" />
-                <span className=" text-xl text-emerald-500">
-                  ${currentBidPrice || startBidPrice}
-                </span>
-              </p>
-            </div>
-          )}
-          <div className="flex space-x-2">
-            <input
-              value={bidAmount}
-              onChange={(e) => setBidAmount(e.target.value)}
-              className="flex-1 p-2 border border-gray-400 rounded"
-              type="text"
-              placeholder="Your Bid"
-            />
+      {type === 'FORWARD' &&
+        status === 'ACTIVE' &&
+        !showPayButton &&
+        !isCurrentUserSeller && (
+          <>
+            {auctionData.highestBid && (
+              <div className="mt-2 space-y-4">
+                <p className="text-md font-bold text-gray-400 flex space-x-2">
+                  Top Bidder
+                  <Tag className="mx-2" />
+                  <span className="font-semibold text-lg">
+                    {auctionData.highestBid.name}
+                  </span>
+                </p>
+                <p className="text-md font-bold text-gray-400 flex space-x-2 items-center">
+                  Current bid <CircleDollarSign className="mx-2" />
+                  <span className=" text-xl text-emerald-500">
+                    ${currentBidPrice || startBidPrice}
+                  </span>
+                </p>
+              </div>
+            )}
+            <div className="flex space-x-2">
+              <input
+                value={bidAmount}
+                onChange={(e) => setBidAmount(e.target.value)}
+                className="flex-1 p-2 border border-gray-400 rounded"
+                type="text"
+                placeholder="Your Bid"
+              />
 
-            <button className="p-2 btn btn-primary" onClick={handlePlaceBid}>
-              Place Bid
-            </button>
-          </div>
-        </>
-      )}
+              <button className="p-2 btn btn-primary" onClick={handlePlaceBid}>
+                Place Bids
+              </button>
+            </div>
+          </>
+        )}
       {type !== 'DUTCH' &&
         (status === 'SOLD' || status === 'AWAITING_PAYMENT') &&
         !showPayButton && (
