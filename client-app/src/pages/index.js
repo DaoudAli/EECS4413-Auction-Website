@@ -1,7 +1,40 @@
-import { ChevronRight } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { ChevronRight } from "lucide-react";
+import { useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 export default function Home() {
+  useEffect(async () => {
+    // Check if it's the user's first visit
+    const isFirstVisit = localStorage.getItem("firstVisit") === null;
+
+    if (isFirstVisit) {
+      // Show the alert message
+      alert(
+        "This is the first time opening the application. Please allow 5 minutes for backend services to deploy/spin up as they spin down as a development instance free-tier hosting."
+      );
+
+      // Set 'firstVisit' to 'false' in localStorage
+      localStorage.setItem("firstVisit", "false");
+
+      //Spin up all backend services
+      try {
+        let spinUpAuction = await fetch(
+          "https://auction-service.onrender.com/auctions/health"
+        );
+        let spinUpCatalogue = await fetch(
+          "https://eecs4413-catalogue-service.onrender.com/catalogue/items"
+        );
+        let spinUpPayment = await fetch(
+          "https://payment-service-nx9h.onrender.com/payment/all"
+        );
+        let spinUpUser = await fetch(
+          "https://user-service-of2m.onrender.com/users"
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, []);
   return (
     <div className="relative isolate overflow-hidden pb-32">
       <div
@@ -12,7 +45,7 @@ export default function Home() {
           className="aspect-[1108/632] w-[69.25rem] bg-gradient-to-r from-[#80caff] to-[#ec4899] opacity-20"
           style={{
             clipPath:
-              'polygon(50% 20%, 65% 20%, 80% 35%, 80% 50%, 65% 80%, 50% 80%, 35% 80%, 20% 50%, 20% 35%, 35% 20%)',
+              "polygon(50% 20%, 65% 20%, 80% 35%, 80% 50%, 65% 80%, 50% 80%, 35% 80%, 20% 50%, 20% 35%, 35% 20%)",
           }}
         />
       </div>
