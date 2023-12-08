@@ -29,7 +29,7 @@ public class AuctionStatusScheduler {
 
     }
 
-    @Scheduled(fixedRate = 10000) // runs every 10 seconds
+    @Scheduled(fixedRate = 100000)
     public void updateAuctionStatuses() {
         List<Auction> activeAuctions = auctionRepository.findByStatus(AuctionStatus.ACTIVE);
         List<Auction> nullAuctions = auctionRepository.findByStatus(null);

@@ -72,7 +72,7 @@ export default function Home() {
             How It Works
           </h2>
           <p className="mt-6 text-lg leading-8 text-gray-300">
-            Here's a simple overview of how our platform works:
+            Here&apos;'s a simple overview of how our platform works:
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
@@ -93,8 +93,8 @@ export default function Home() {
                 Step 2
               </dt>
               <dd className="mt-1 text-base leading-7 text-gray-300">
-                Place your bids on items you're interested in or choose the "Buy
-                Now" option for instant purchase.
+                Place your bids on items you&apos;'re interested in or choose
+                the &apos;"Buy Now&apos;" option for instant purchase.
               </dd>
             </div>
             {/* Step 3 */}

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 const ItemCard = ({ item }) => {
   const router = useRouter();
+  const [hasError, setHasError] = useState(false); // State to track loading error
+
   const handleItemClick = (itemId) => {
     router.push(`/catalogue/${itemId}`);
   };
@@ -15,22 +17,21 @@ const ItemCard = ({ item }) => {
     >
       <div className="aspect-h-4 aspect-w-3 bg-gray-600 sm:aspect-none rounded-md group-hover:opacity-75 sm:h-72">
         {item.imageUrls ? (
-          item.imageUrls
-            .split(',')
-            .map((imageUrl, index) => (
-              <Image
-                key={index}
-                src={
-                  /\.(jpeg|jpg|png|gif)/i.test(imageUrl)
-                    ? imageUrl
-                    : '/default-image.jpeg'
+          item.imageUrls.split(',').map((imageUrl, index) => (
+            <Image
+              key={index}
+              src={hasError ? '/default-image.jpeg' : imageUrl}
+              width={index === 0 ? 1000 : 500}
+              height={index === 0 ? 1000 : 500}
+              alt={`Image ${index + 1}`}
+              className="h-full w-full object-cover object-center sm:h-full sm:w-full"
+              onError={() => {
+                if (!hasError) {
+                  setHasError(true); // Set error state to true upon first failure
                 }
-                width={index === 0 ? 1000 : 500}
-                height={index === 0 ? 1000 : 500}
-                alt={`Image ${index + 1}`}
-                className="h-full w-full object-cover object-center sm:h-full sm:w-full"
-              />
-            ))
+              }}
+            />
+          ))
         ) : (
           <Image
             src="/default-image.jpeg"

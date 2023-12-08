@@ -35,8 +35,9 @@ export default function App() {
       .then((data) => setClientSecret(data.clientSecret))
       .catch((error) => {
         // Handle any errors
-        // console.error("Error:", error);
+        // console.error('Error:', error);
       });
+    console.log('User from tripe', userCartItems);
   }, []);
 
   return (

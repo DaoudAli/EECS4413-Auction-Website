@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Clock, CircleDollarSign, Tag } from 'lucide-react';
 import { useAuction } from '@/context/AuctionContext';
 import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+
 const AuctionDetails = ({ auctionData }) => {
-  const { placeBid, buyNow } = useAuction();
+  const router = useRouter();
+  const { placeBid, buyNow, editAuction, endAuction } = useAuction();
   const { currentUser } = useAuth();
   const [bidAmount, setBidAmount] = useState('');
   const [showPayButton, setShowPayButton] = useState(false);
@@ -27,7 +30,6 @@ const AuctionDetails = ({ auctionData }) => {
       const secondsLeft = Math.floor((timeLeft % (1000 * 60)) / 1000);
       // Add leading zeros if number is less than 10
       const formatTime = (time) => (time < 10 ? `0${time}` : time.toString());
-
       return {
         hoursLeft: formatTime(hoursLeft),
         minutesLeft: formatTime(minutesLeft),
@@ -82,7 +84,7 @@ const AuctionDetails = ({ auctionData }) => {
     // Optionally, redirect the user to the checkout page or show a confirmation
     // console.log("Item added to cart:", itemDetails);
     // Redirect to checkout page (if needed)
-    // router.push('/path-to-checkout-page');
+    router.push('/payment');
   }; // Handle 'Buy Now' for Dutch auction
   const handleBuyNow = () => {
     if (type === 'DUTCH' && status === 'ACTIVE') {
@@ -90,13 +92,35 @@ const AuctionDetails = ({ auctionData }) => {
       buyNow(id, buyNowPrice, currentUser.id);
     }
   };
+
+  const isCurrentUserSeller = currentUser.id === auctionData.sellerId;
+
+  // Function to handle editing the auction for Dutch auctions
+  const handleEditAuction = () => {
+    // Implement the logic to edit the auction here
+    // For example, you can reduce the price by a fixed amount
+    // and call the editAuction function from your context
+    const newPrice = currentBidPrice - 10; // Reduce the price by $10
+    editAuction(id, newPrice);
+  };
+
+  // Function to handle ending the auction for Forward and Dutch auctions
+  const handleEndAuction = () => {
+    // Implement the logic to end the auction here
+    // Call the endAuction function from your context
+    endAuction(id);
+  };
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
   useEffect(() => {
     const checkIfUserCanPay = () => {
       if (!auctionData || !currentUser) {
         return false;
       }
-
+      console.log(
+        'auctionData and user in auction detailsss',
+        currentUser,
+        auctionData
+      );
       // Check if auction is sold or ended
       const isAuctionClosed = ['SOLD'].includes(auctionData.status);
 
@@ -108,7 +132,7 @@ const AuctionDetails = ({ auctionData }) => {
         highestBid && highestBid.bidderId === currentUser.id;
       console.log('highest bid in user can pay', isCurrentUserWinner);
 
-      return isAuctionClosed && isCurrentUserWinner;
+      return isAuctionClosed && isCurrentUserWinner && !isCurrentUserSeller;
     };
 
     setShowPayButton(checkIfUserCanPay());
@@ -160,31 +184,61 @@ const AuctionDetails = ({ auctionData }) => {
           {timeLeft.hoursLeft}h {timeLeft.minutesLeft}m {timeLeft.secondsLeft}s
         </span>
       </p>
-
-      {/* Dutch Auction specific details */}
-      {type === 'DUTCH' && status === 'ACTIVE' && !showPayButton && (
-        <>
-          {/* Highest Bidder Section */}
-          {auctionData.highestBid && (
-            <div className="mt-2 space-y-4">
-              <p className="text-md font-bold text-gray-400 flex space-x-2 items-center">
-                Current price <CircleDollarSign className="mx-1" />
-                <span className=" text-xl text-emerald-500">
-                  ${currentBidPrice || startBidPrice}
-                </span>
-              </p>
-            </div>
+      {/* Check if the current user is the seller */}
+      {isCurrentUserSeller && (
+        <div className="mt-4">
+          {/* Add a button to edit the auction for Dutch auctions */}
+          {type === 'DUTCH' && status === 'ACTIVE' && (
+            <button
+              onClick={handleEditAuction}
+              className="text-white border-white btn btn-primary w-full"
+              size="lg"
+              variant="outline"
+            >
+              Edit Auction
+            </button>
           )}
-          <button
-            onClick={handleBuyNow}
-            className="text-white border-white btn btn-primary w-full"
-            size="lg"
-            variant="outline"
-          >
-            Buy Now
-          </button>
-        </>
+
+          {/* Add a button to end the auction for Forward and Dutch auctions */}
+          {(type === 'FORWARD' || type === 'DUTCH') && status === 'ACTIVE' && (
+            <button
+              onClick={handleEndAuction}
+              className="text-white border-white btn btn-danger w-full mt-2"
+              size="lg"
+              variant="outline"
+            >
+              End Auction
+            </button>
+          )}
+        </div>
       )}
+      {/* Dutch Auction specific details */}
+      {!isCurrentUserSeller &&
+        type === 'DUTCH' &&
+        status === 'ACTIVE' &&
+        !showPayButton && (
+          <>
+            {/* Highest Bidder Section */}
+            {
+              <div className="mt-2 space-y-4">
+                <p className="text-md font-bold text-gray-400 flex space-x-2 items-center">
+                  Current price <CircleDollarSign className="mx-1" />
+                  <span className=" text-xl text-emerald-500">
+                    ${currentBidPrice || startBidPrice}
+                  </span>
+                </p>
+              </div>
+            }
+            <button
+              onClick={handleBuyNow}
+              className="text-white border-white btn btn-primary w-full"
+              size="lg"
+              variant="outline"
+            >
+              Buy Now
+            </button>
+          </>
+        )}
       {type === 'DUTCH' &&
         (status === 'SOLD' || status === 'AWAITING_PAYMENT') &&
         !showPayButton && (
