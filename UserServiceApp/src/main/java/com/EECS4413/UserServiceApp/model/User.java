@@ -44,6 +44,21 @@ public class User {
 	public User() {
 	}
 
+	public User(String userName, String passWord, String firstName, String lastName,
+			String street, String streetNumber, String province, String country,
+			String postalCode, boolean isSeller) {
+		this.userName = userName;
+		this.passWord = passWord;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.street = street;
+		this.streetNumber = streetNumber;
+		this.province = province;
+		this.country = country;
+		this.postalCode = postalCode;
+		this.isSeller = isSeller;
+	}
+
 	// Include other constructors if necessary
 
 	// Getters and setters
