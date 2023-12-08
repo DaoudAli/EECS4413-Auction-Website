@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 export default function Home() {
-  useEffect(() => {
+  useEffect(async () => {
     // Check if it's the user's first visit
     const isFirstVisit = localStorage.getItem("firstVisit") === null;
 
@@ -15,6 +15,24 @@ export default function Home() {
 
       // Set 'firstVisit' to 'false' in localStorage
       localStorage.setItem("firstVisit", "false");
+
+      //Spin up all backend services
+      try {
+        let spinUpAuction = await fetch(
+          "https://auction-service.onrender.com/auctions/health"
+        );
+        let spinUpCatalogue = await fetch(
+          "https://eecs4413-catalogue-service.onrender.com/catalogue/items"
+        );
+        let spinUpPayment = await fetch(
+          "https://payment-service-nx9h.onrender.com/payment/all"
+        );
+        let spinUpUser = await fetch(
+          "https://user-service-of2m.onrender.com/users"
+        );
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, []);
   return (
