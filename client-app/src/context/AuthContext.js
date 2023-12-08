@@ -58,6 +58,7 @@ export const AuthProvider = ({ children }) => {
         hideProgressBar: true,
         autoClose: 2000,
       });
+      Router.replace('/profile');
     } catch (error) {
       console.error(error);
       // Handle any login errors here
