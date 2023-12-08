@@ -24,7 +24,7 @@ export default async function handler(req, res) {
           ui_mode: "embedded",
           line_items: lineItems,
           mode: "payment",
-          return_url: `http://localhost:3000/payment/receipt`,
+          return_url: `https://eecs-4413-auction-website.vercel.app/payment/receipt`,
         });
 
         res.send({ clientSecret: session.client_secret });
