@@ -7,12 +7,18 @@ import { Spinner } from '@nextui-org/spinner';
 export default function withAuth(WrappedComponent) {
   const WithAuth = (props) => {
     const Router = useRouter();
-    const { currentUser, isAuthenticated } = useAuth();
+    const { currentUser } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
+    let isAuthenticated;
 
     useEffect(() => {
       // Set a delay before checking authentication status
       const timer = setTimeout(() => {
+        try {
+          isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+        } catch (error) {
+          console.error('Failed to access localStorage:', error);
+        }
         if (!isAuthenticated) {
           Router.replace('/signin');
           toast.error('You need to sign in or sign up before continuing', {

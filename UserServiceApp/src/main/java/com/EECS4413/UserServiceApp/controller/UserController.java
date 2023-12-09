@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -91,9 +93,19 @@ public class UserController {
 		if (newUser == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
 		}
+
 		if (token != null) {
 			HttpHeaders headers = new HttpHeaders();
-			headers.add(HttpHeaders.SET_COOKIE, token);
+
+			// Create a cookie
+			ResponseCookie cookie = ResponseCookie.from("auth-token", token)
+					.httpOnly(true) // Secure cookie, not accessible via JavaScript
+					.path("/") // Available for entire application
+					// .secure(true) // Uncomment this for HTTPS only
+					.build();
+
+			// Add cookie to the headers
+			headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
 			return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(newUser);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Failed to create user");
@@ -139,10 +151,43 @@ public class UserController {
 
 		User user = userServices.getUserFromToken(token);
 		if (user != null) {
-			return ResponseEntity.ok(user);
+			HttpHeaders headers = new HttpHeaders();
+
+			ResponseCookie cookie = ResponseCookie.from("auth-token", token)
+					.httpOnly(true) // Secure cookie, not accessible via JavaScript
+					.path("/") // Available for entire application
+					// .secure(true) // Uncomment this for HTTPS only
+					.build();
+
+			// Add cookie to the headers
+			headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
+
+			// Return response entity with headers
+			return ResponseEntity.ok().headers(headers).body(user);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized - Invalid Token");
 		}
+	}
+
+	@Operation(summary = "Log out a User", description = "Logs a user out")
+	@ApiResponse(responseCode = "200", description = "User successfully logged out.")
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+		// Create a new cookie to overwrite the existing one
+		ResponseCookie cookie = ResponseCookie.from("auth-token", "") // Setting value to null
+				.path("/") // Should match the path of the cookie you want to remove
+				.httpOnly(true) // Should match the settings of the cookie you want to remove
+				// .secure(true) // Uncomment this if the original cookie was secure
+				.maxAge(0) // Set max age to 0 to remove the cookie
+				.build();
+
+		// Add the cookie to the response
+		response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+		// You can add any additional logout logic here
+
+		// Return response entity
+		return ResponseEntity.ok("Logged out successfully");
 	}
 
 	@Operation(summary = "Update User", description = "Updates a user's username.")

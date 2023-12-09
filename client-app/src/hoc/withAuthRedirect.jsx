@@ -28,7 +28,7 @@ export default function withAuthRedirect(WrappedComponent) {
           Router.replace('/');
         }
         setIsLoading(false);
-      }, 1500); // Delay of 1 second
+      }); // Delay of 1 second
 
       // Cleanup the timer when the component is unmounted or re-rendered
       return () => clearTimeout(timer);
