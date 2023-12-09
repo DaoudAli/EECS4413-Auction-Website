@@ -102,8 +102,8 @@ function CatalogueItem() {
                     <Image
                       key={index}
                       src={hasError ? '/default-image.jpeg' : imageUrl}
-                      width={index === 0 ? 1000 : 500}
-                      height={index === 0 ? 1000 : 500}
+                      width={index === 0 ? 1000 : 300}
+                      height={index === 0 ? 1000 : 300}
                       alt={`Image ${index + 1}`}
                       className="rounded-lg object-cover lg:col-span-2 lg:row-span-2"
                       onError={() => {
@@ -117,8 +117,8 @@ function CatalogueItem() {
               ) : (
                 <Image
                   src="/default-image.jpeg"
-                  width={500}
-                  height={500}
+                  width={300}
+                  height={300}
                   alt="Default Image"
                   className="rounded-lg object-cover lg:col-span-2 lg:row-span-2"
                 />
