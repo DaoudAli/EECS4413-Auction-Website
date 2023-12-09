@@ -97,16 +97,14 @@ function AuctionItemForm() {
         `/${selectedItemId}/new-auction`,
         formData
       );
-      console.log('Form Submitted', formData);
-      router.push(`/catalogue/${response.data.id}`);
+      console.log('Form Submitted in auction', response);
+      router.push(`/catalogue/${selectedItemId}`);
       // Handle successful submission (e.g., show success message or redirect)
     } catch (error) {
       // Handle API request errors
       console.error('Submission failed', error);
       // Show error message to user
     }
-
-    router.push('/catalogue/sell/itemListed');
   };
 
   return (

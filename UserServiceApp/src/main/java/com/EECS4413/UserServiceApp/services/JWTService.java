@@ -31,7 +31,6 @@ public class JWTService {
     public String generateToken(User user) {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
-        System.out.println("SECRET KEY " + SECRET_KEY);
         // Decode the secret key
         byte[] decodedKey = Base64.getDecoder().decode(SECRET_KEY);
         Key signingKey = Keys.hmacShaKeyFor(decodedKey);
