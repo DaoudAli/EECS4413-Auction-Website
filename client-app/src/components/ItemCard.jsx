@@ -17,21 +17,21 @@ const ItemCard = ({ item }) => {
     >
       <div className="aspect-h-4 aspect-w-3 bg-gray-600 sm:aspect-none rounded-md group-hover:opacity-75 sm:h-72">
         {item.imageUrls ? (
-          item.imageUrls.split(',').map((imageUrl, index) => (
-            <Image
-              key={index}
-              src={hasError ? '/default-image.jpeg' : imageUrl}
-              width={index === 0 ? 1000 : 500}
-              height={index === 0 ? 1000 : 500}
-              alt={`Image ${index + 1}`}
-              className="h-full w-full object-cover object-center sm:h-full sm:w-full"
-              onError={() => {
-                if (!hasError) {
-                  setHasError(true); // Set error state to true upon first failure
-                }
-              }}
-            />
-          ))
+          <Image
+            key={'image-item'}
+            src={
+              hasError ? '/default-image.jpeg' : item.imageUrls.split(',')[0]
+            }
+            width={1000}
+            height={1000}
+            alt={`Image-item`}
+            className="h-full w-full object-cover object-center sm:h-full sm:w-full"
+            onError={() => {
+              if (!hasError) {
+                setHasError(true); // Set error state to true upon first failure
+              }
+            }}
+          />
         ) : (
           <Image
             src="/default-image.jpeg"
