@@ -287,7 +287,7 @@ const AuctionDetails = ({ auctionData }) => {
               />
 
               <button className="p-2 btn btn-primary" onClick={handlePlaceBid}>
-                Place Bids
+                Place Bid
               </button>
             </div>
           </>
