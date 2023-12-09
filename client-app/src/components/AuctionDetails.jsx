@@ -93,7 +93,8 @@ const AuctionDetails = ({ auctionData }) => {
     }
   };
 
-  const isCurrentUserSeller = currentUser.id === auctionData.sellerId;
+  const isCurrentUserSeller =
+    currentUser && currentUser.id === auctionData.sellerId;
 
   // Function to handle editing the auction for Dutch auctions
   const handleEditAuction = () => {

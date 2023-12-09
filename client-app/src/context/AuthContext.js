@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
       localStorage.setItem('isAuthenticated', 'true');
     } catch (error) {
-      console.error(error);
+      console.error('User is authenticated', error);
       setCurrentUser(null);
       setIsAuthenticated(false);
       localStorage.setItem('isAuthenticated', 'false');
@@ -85,7 +85,9 @@ export const AuthProvider = ({ children }) => {
       // Adjust the endpoint as per your API
       const response = await userServiceApi.post('/new', userData);
       Cookies.set('auth-token', response.data);
-
+      localStorage.setItem('isAuthenticated', 'true');
+      setCurrentUser(userData);
+      setIsAuthenticated(true);
       toast.success('Successfully Signed up!', {
         position: toast.POSITION.TOP_CENTER,
         toastId: 'login-success',
@@ -107,12 +109,32 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   };
 
-  const logout = () => {
-    Cookies.remove('auth-token');
-    setCurrentUser(null);
-    setIsAuthenticated(false);
-    localStorage.setItem('isAuthenticated', 'false');
-    Router.replace('/');
+  const logout = async () => {
+    // Call the server-side logout endpoint
+    try {
+      await userServiceApi.post('/logout');
+      // If the call is successful, proceed with client-side logout
+      Cookies.remove('auth-token');
+      setCurrentUser(null);
+      setIsAuthenticated(false);
+      localStorage.setItem('isAuthenticated', 'false');
+      Router.replace('/');
+      toast.success('Successfully logged out!', {
+        position: toast.POSITION.TOP_CENTER,
+        toastId: 'logout-success',
+        hideProgressBar: true,
+        autoClose: 2000,
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Handle any logout errors here
+      toast.error('Error during logout', {
+        position: toast.POSITION.TOP_CENTER,
+        toastId: 'logout-failed',
+        hideProgressBar: true,
+        autoClose: 2000,
+      });
+    }
   };
   const getUserById = useCallback(async (userId) => {
     setIsLoading(true);

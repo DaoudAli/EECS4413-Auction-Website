@@ -134,11 +134,12 @@ function AuctionItemForm() {
               onChange={(e) => setSelectedItemId(e.target.value)}
             >
               <option value="">Select an item</option>
-              {userItemsData.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
+              {userItemsData &&
+                userItemsData.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
             </select>
             {errors.itemName && (
               <p className="text-red-500">{errors.itemName}</p>
