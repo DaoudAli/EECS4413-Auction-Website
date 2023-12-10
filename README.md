@@ -135,6 +135,14 @@ After starting the services and the frontend application, you can use the platfo
 ## Database
 Our MySQL database is hosted online. We will send you the necessary credential files during submission. 
 
----
+## Docker
+
+You can find the Docker images for each service hosted on dockerhub with the links below:
+- Catalogue Service: https://hub.docker.com/r/daoudali/eecs4413
+- Auction Service: https://hub.docker.com/r/daoudali/auctionservice
+- Payment Service: https://hub.docker.com/r/daoudali/paymentservice
+- User Service: https://hub.docker.com/r/daoudali/userservice
+
+## Notes
 
 Please ensure that all your local environment settings are properly configured to connect to the necessary services and databases.
