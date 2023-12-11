@@ -18,6 +18,13 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>6.4.0.Final</version>
+			<type>pom</type>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -64,6 +71,12 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.12.3</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy -->
+		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>1.14.10</version>
+		</dependency>
 
 	</dependencies>
 
@@ -78,20 +91,20 @@
 				<artifactId>jib-maven-plugin</artifactId>
 				<version>3.2.1</version>
 				<configuration>
-                <from>
-                    <image>openjdk:17-alpine</image>
-                </from>
-                <to>
-                    <image>catalogue-service</image>
-                </to>
-                <container>
-                    <ports>
-                        <port>8080</port>
-                    </ports>
-                    <format>OCI</format>
-                </container>
-            	</configuration>
-        	</plugin>
+					<from>
+						<image>openjdk:17-alpine</image>
+					</from>
+					<to>
+						<image>catalogue-service</image>
+					</to>
+					<container>
+						<ports>
+							<port>8080</port>
+						</ports>
+						<format>OCI</format>
+					</container>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
